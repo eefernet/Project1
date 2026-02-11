@@ -20,10 +20,18 @@
               file="Source/AccountSetupComponent.cpp"/>
         <FILE id="uQpfsf" name="AccountSetupComponent.h" compile="0" resource="0"
               file="Source/AccountSetupComponent.h"/>
+        <FILE id="IUCrUB" name="GuestDashboardComponent.cpp" compile="1" resource="0"
+              file="Source/GuestDashboardComponent.cpp"/>
+        <FILE id="vzHk4S" name="GuestDashboardComponent.h" compile="0" resource="0"
+              file="Source/GuestDashboardComponent.h"/>
         <FILE id="U0BTdj" name="LoginComponent.cpp" compile="1" resource="0"
               file="Source/LoginComponent.cpp"/>
         <FILE id="I4asfR" name="LoginComponent.h" compile="0" resource="0"
               file="Source/LoginComponent.h"/>
+        <FILE id="JhvcHF" name="OwnerDashboardComponent.cpp" compile="1" resource="0"
+              file="Source/OwnerDashboardComponent.cpp"/>
+        <FILE id="S3cKxW" name="OwnerDashboardComponent.h" compile="0" resource="0"
+              file="Source/OwnerDashboardComponent.h"/>
       </GROUP>
       <FILE id="yV0XDG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="dQDTtw" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>

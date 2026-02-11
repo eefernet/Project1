@@ -208,6 +208,8 @@ void AccountSetupComponent::onCancelClicked()
 
 }
 
+//This is a helper function to reset the input fields
+//TODO: This is kinda broken, but i want to drink alcohol so ill fix later
 void AccountSetupComponent::ResetFields()
 {
     usernameInput.clear();

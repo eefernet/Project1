@@ -8,6 +8,8 @@
 #include "User.h"
 #include "Owner.h"
 #include "Guest.h"
+#include "OwnerDashboardComponent.h"
+#include "GuestDashboardComponent.h"
 
 /*
 * This is the main parent compontent that will manage the different scereens and switching between them.
@@ -27,6 +29,8 @@ private:
     //UI Components
     LoginComponent loginScreen;
     AccountSetupComponent accountSetup;
+    OwnerDashboardComponent ownerDashboard;
+    GuestDashboardComponent guestDashboard;
 
     //User management
     std::unique_ptr<User> currentUser;

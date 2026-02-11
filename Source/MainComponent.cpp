@@ -35,12 +35,31 @@ MainComponent::MainComponent()
         handleCancelAccountSetup();
         };
 
+    //Setup place holder dashboards for logout callbacks
+    ownerDashboard.onLogout = [this]() {
+        currentUser.reset();
+        showView(ViewState::Login);
+        loginScreen.setMessage("Logged out successfully", juce::Colours::green);
+        };
+    guestDashboard.onLogout = [this]() {
+        currentUser.reset();
+        showView(ViewState::Login);
+        loginScreen.setMessage("Logged out successfully", juce::Colours::green);
+        };
+
     // Show login screen initially
     addAndMakeVisible(loginScreen);
 	//Account setup is added but hidden until needed
     accountSetup.setVisible(false);
 	//Add account setup to the main component so we can switch to it when needed
     addChildComponent(accountSetup);
+    //Dashboards are added bbut hidden until we need them
+    ownerDashboard.setVisible(false);
+    //add owner Dashoard as a child to the main component
+    addChildComponent(ownerDashboard);
+    guestDashboard.setVisible(false);
+	//Add guest dashboard as a child to the main component
+    addChildComponent(guestDashboard);
 
 	//Set first size of the main window, its resizable so size doesnt matter i guess
     setSize(600, 500);
@@ -61,6 +80,8 @@ void MainComponent::resized()
 {
     loginScreen.setBounds(getLocalBounds());
     accountSetup.setBounds(getLocalBounds());
+    ownerDashboard.setBounds(getLocalBounds());
+    guestDashboard.setBounds(getLocalBounds());
 }
 
 //Logic when the owner tries login, check if he exists, if the password is correct, and if he is an owner. If all checks pass, transition to the owner dashboard
@@ -195,6 +216,8 @@ void MainComponent::showView(ViewState view)
 	//Show/hide components based on the current view
     loginScreen.setVisible(view == ViewState::Login);
     accountSetup.setVisible(view == ViewState::AccountSetup);
+    ownerDashboard.setVisible(view == ViewState::OwnerDashboard);
+    guestDashboard.setVisible(view == ViewState::GuestDashboard);
 	//for the dashboards but since they are not implemented yet, we will just show a message in the login screen when we transition to them
     if (view == ViewState::Login)
     {
@@ -223,20 +246,22 @@ bool MainComponent::isFirstUser() const
 void MainComponent::showOwnerDashboard()
 {
     DBG("=== OWNER DASHBOARD ===");
-    DBG("TODO: Implement Owner dashboard in Sprint 2");
-    DBG("Features: Record, View Waveform, Play, Filter, Save, etc.");
+    ownerDashboard.setUsername(currentUser->getUserName());
+    showView(ViewState::OwnerDashboard);
 
+    //remove later
     // For now, just show a message
-    loginScreen.setMessage("Owner Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
+    //loginScreen.setMessage("Owner Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
 }
 
 //This is a placeholder!!!
 void MainComponent::showGuestDashboard()
 {
+    
     DBG("=== GUEST DASHBOARD ===");
-    DBG("TODO: Implement Guest dashboard in Sprint 2");
-    DBG("Features: View Sound List, Play & Filter, Download");
+    showView(ViewState::GuestDashboard);
 
+    //remove later
     // For now, just show a message
-    loginScreen.setMessage("Guest Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
+    //loginScreen.setMessage("Guest Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
 }
