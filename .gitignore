@@ -1,0 +1,105 @@
+# ============================================================================
+# JUCE Project .gitignore
+# ============================================================================
+
+# Build folders - these are gen by the IDE
+Builds/
+builds/
+DerivedData/
+
+# IDE-specific folders and files (we dont need these in the repo)
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio specific files
+*.opensdf
+*.sdf
+*.db
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+ipch/
+x64/
+x86/
+Debug/
+Release/
+*.ilk
+*.pdb
+*.exp
+*.lib (build artifacts, not library source)
+
+# Xcode specific files
+xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux specific files (tip my fedora friends)
+*~
+.directory
+
+# JuceLibraryCode - Auto-generated
+JuceLibraryCode/
+
+# Compiled Object files
+*.o
+*.obj
+*.lo
+*.slo
+*.ko
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Binary folders
+bin/
+obj/
+
+# Audio plugin build artifacts
+*.vst
+*.vst3
+*.component
+*.aaxplugin
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.log

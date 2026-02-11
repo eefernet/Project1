@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="jTYPbn" name="Project1" projectType="guiapp" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+  <MAINGROUP id="JwBuOy" name="Project1">
+    <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
+      <FILE id="yV0XDG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="dQDTtw" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="fgQb5B" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <VS2026 targetFolder="Builds/VisualStudio2026">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Project1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Project1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../dev/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2026>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
