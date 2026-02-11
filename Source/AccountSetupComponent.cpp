@@ -186,7 +186,7 @@ void AccountSetupComponent::onCreateAccount()
     messageLabel.setColour(juce::Label::textColourId, juce::Colours::green);
 
     // Sleep for a second to let the user see the success message
-	_sleep(1000); 
+	//_sleep(1000); 
     //Reset fields for next usage
 	ResetFields();
     
