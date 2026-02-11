@@ -72,7 +72,7 @@ should make it easier for us to add multiple views that will be a child of the m
 4. Click **Save and Open in IDE**.
 5. Build and run from your IDE (tested with Visual Studio — Debug x64).
 6. Any new features must be created in a new branch labeled `feature/ShinyNewFeature`.
-7. If your feature is good, do a pull request to `master`
+7. If your feature is ready for prod release, do a pull request to `master`
 
 ## Adding Files (IMPORTANT PLEASE READ)
 
