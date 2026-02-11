@@ -32,13 +32,15 @@ A desktop audio application built with the [JUCE](https://juce.com/) framework i
 Project1/
 ├── Project1.jucer                      # Projucer project file
 ├── README.md
-└── Source/                          
+└── Source/
     ├── Main.cpp                        # App entry point & window setup
     ├── MainComponent.h/cpp             # Root component — screen routing & user management
     │
     ├── Views/                          # Folder that contains view controllers
     │   ├── LoginComponent.h/cpp        # Login screen UI & input handling
-    │   └── AccountSetupComponent.h/cpp # Account creation form & validation
+    │   ├── AccountSetupComponent.h/cpp # Account creation form & validation
+    │   ├── OwnerDashboardComponent.h/cpp # Owner post-login dashboard
+    │   └── GuestDashboardComponent.h/cpp # Guest post-login dashboard
     │
     ├── Models/                         # Folder that contains all object types
     │   ├── User.h/cpp                  # Abstract base class for all users
