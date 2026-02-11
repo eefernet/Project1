@@ -4,6 +4,25 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="JwBuOy" name="Project1">
     <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
+      <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils"/>
+      <GROUP id="{783C59CF-188C-6038-9B55-7B6A78FE826D}" name="Models">
+        <FILE id="bGIlOr" name="Guest.cpp" compile="1" resource="0" file="Source/Guest.cpp"/>
+        <FILE id="OCAQlH" name="Guest.h" compile="0" resource="0" file="Source/Guest.h"/>
+        <FILE id="ZWj0Os" name="Owner.cpp" compile="1" resource="0" file="Source/Owner.cpp"/>
+        <FILE id="Zcd82F" name="Owner.h" compile="0" resource="0" file="Source/Owner.h"/>
+        <FILE id="rYk3bP" name="User.cpp" compile="1" resource="0" file="Source/User.cpp"/>
+        <FILE id="IeCAP6" name="User.h" compile="0" resource="0" file="Source/User.h"/>
+      </GROUP>
+      <GROUP id="{EB3A7F58-8BCB-E49C-4545-F558B8E4AFE4}" name="Views">
+        <FILE id="FEAwA1" name="AccountSetupComponent.cpp" compile="1" resource="0"
+              file="Source/AccountSetupComponent.cpp"/>
+        <FILE id="uQpfsf" name="AccountSetupComponent.h" compile="0" resource="0"
+              file="Source/AccountSetupComponent.h"/>
+        <FILE id="U0BTdj" name="LoginComponent.cpp" compile="1" resource="0"
+              file="Source/LoginComponent.cpp"/>
+        <FILE id="I4asfR" name="LoginComponent.h" compile="0" resource="0"
+              file="Source/LoginComponent.h"/>
+      </GROUP>
       <FILE id="yV0XDG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="dQDTtw" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="fgQb5B" name="MainComponent.cpp" compile="1" resource="0"
