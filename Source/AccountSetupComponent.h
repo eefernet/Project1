@@ -17,7 +17,7 @@ class AccountSetupComponent : public juce::Component
 {
 public:
     //This constructor is going to be overriden in the implementation file
-    AccountSetupComponent();
+    AccountSetupComponent(bool isFirstUser = true);
     ~AccountSetupComponent() override;
 
     void paint(juce::Graphics&) override;
@@ -46,7 +46,9 @@ private:
     //Callback functions for button clicks, so we can handle logic
     //These remain private
     void onCreateAccount();
-    void onCancel();
+	//Learned that this needs to be unique from the callback above, otherwise we get a "redefinition of onCancel" error, which is fun
+    void onCancelClicked();
+	void ResetFields();
 
 	//Label to display error messages or success messages
     juce::Label messageLabel;

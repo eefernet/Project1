@@ -19,7 +19,7 @@ public:
     void paint(juce::Graphics&) override;
     void resized() override;
 
-    //Callbacks for parent component
+	//Callbacks for parent component (public facing so we can set them in the parent component)
     std::function<void(juce::String username, juce::String password)> onOwnerLogin;
     std::function<void()> onGuestLogin;
     std::function<void()> onCreateAccount;

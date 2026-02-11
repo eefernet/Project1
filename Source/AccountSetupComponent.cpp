@@ -11,7 +11,7 @@
 #include "AccountSetupComponent.h"
 
 // Check if this is the first user being created, if so, they must be an owner
-AccountSetupComponent::AccountSetupComponent(): isFirstUser(true), isOwner(false)  
+AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(true), isOwner(false)  
 {
     //Title
     titleLabel.setText("Create New Account", juce::dontSendNotification);
@@ -183,17 +183,35 @@ void AccountSetupComponent::onCreateAccount()
 	//Show success message to make the user feel good about themselves, that for once they did something right in life
     messageLabel.setText("Account created successfully!", juce::dontSendNotification);
     messageLabel.setColour(juce::Label::textColourId, juce::Colours::green);
+
+    // Sleep for a second to let the user see the success message
+	_sleep(1000); 
+	ResetFields();
+    
 }
 
 //THis is how we handle when the user cancels accounbt creation, clear everything for reuse and segue to the prev screen (login)
-void AccountSetupComponent::onCancel()
+void AccountSetupComponent::onCancelClicked()
 {
     //Clear all fields
+	ResetFields();
+
+    //Let parent know the child is done from daycare
+    // TODO: remove later? Was borked but im sure thats because of my imp of the constructor and the onCancel function
+    //getParentComponent()->setVisible(true);
+    if(onCancel)
+    {
+        onCancel();
+	}
+
+}
+
+void AccountSetupComponent::ResetFields()
+{
     usernameInput.clear();
     passwordInput.clear();
     confirmPasswordInput.clear();
     messageLabel.setText("", juce::dontSendNotification);
 
-    //Let parent know the child is done from daycare
-    getParentComponent()->setVisible(true);
 }
+
