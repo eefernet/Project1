@@ -4,7 +4,9 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="JwBuOy" name="Project1">
     <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
-      <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils"/>
+      <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils">
+        <FILE id="QXRI8k" name="UserRole.h" compile="0" resource="0" file="Source/UserRole.h"/>
+      </GROUP>
       <GROUP id="{783C59CF-188C-6038-9B55-7B6A78FE826D}" name="Models">
         <FILE id="bGIlOr" name="Guest.cpp" compile="1" resource="0" file="Source/Guest.cpp"/>
         <FILE id="OCAQlH" name="Guest.h" compile="0" resource="0" file="Source/Guest.h"/>
