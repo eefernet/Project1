@@ -56,11 +56,12 @@ AccountSetupComponent::AccountSetupComponent(): isFirstUser(true), isOwner(false
     roleSelector.setEnabled(!isFirstUser);  // Disable if first user
     addAndMakeVisible(roleSelector);
 
-    //Buttons
+	//Buttons tied to their individual callbacks
     createAccountButton.setButtonText("Create Account");
     createAccountButton.onClick = [this] { onCreateAccount(); };
     addAndMakeVisible(createAccountButton);
 
+    //Cancel button and its callback
     cancelButton.setButtonText("Cancel");
     cancelButton.onClick = [this] { onCancel(); };
     addAndMakeVisible(cancelButton);

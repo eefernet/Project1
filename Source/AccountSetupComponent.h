@@ -12,7 +12,6 @@
 #include <JuceHeader.h>
 #include "UserRole.h"
 
-
 /// This component will be used to create new user accounts. It will have input fields for username, password, and role selection (owner or guest).
 class AccountSetupComponent : public juce::Component
 {
@@ -24,8 +23,9 @@ public:
     void paint(juce::Graphics&) override;
     void resized() override;
 
-    //Callback when account is created
+    //Callback when account is created or we cancel account creation
     std::function<void(juce::String username, juce::String password, UserRole role)> onAccountCreated;
+    std::function<void()> onCancel;
 
 private:
 	//UI Elements for account setup form
@@ -43,12 +43,13 @@ private:
     juce::TextButton createAccountButton;
     juce::TextButton cancelButton;
 
-	//Label to display error messages or success messages
-    juce::Label messageLabel;
-
-	//Callback functions for button clicks, so we can handle logic
+    //Callback functions for button clicks, so we can handle logic
+    //These remain private
     void onCreateAccount();
     void onCancel();
+
+	//Label to display error messages or success messages
+    juce::Label messageLabel;
 
 	//This is so that if its the first user being created, we can automatically make them an owner and skip the role selection step
     bool isFirstUser;
