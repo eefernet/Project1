@@ -30,22 +30,22 @@ A desktop audio application built with the [JUCE](https://juce.com/) framework i
 
 ```
 Project1/
-├── Project1.jucer              # Projucer project file
+├── Project1.jucer                      # Projucer project file
 ├── README.md
-└── Source/
+└── Source/                          
     ├── Main.cpp                        # App entry point & window setup
     ├── MainComponent.h/cpp             # Root component — screen routing & user management
     │
-    ├── Views/
+    ├── Views/                          # Folder that contains view controllers
     │   ├── LoginComponent.h/cpp        # Login screen UI & input handling
     │   └── AccountSetupComponent.h/cpp # Account creation form & validation
     │
-    ├── Models/
+    ├── Models/                         # Folder that contains all object types
     │   ├── User.h/cpp                  # Abstract base class for all users
     │   ├── Owner.h/cpp                 # Owner subclass (full access)
     │   └── Guest.h/cpp                 # Guest subclass (limited access)
     │
-    └── Utils/
+    └── Utils/                          # Folder that contains all repetitive utils
         └── UserRole.h                  # Enum for Owner / Guest roles
 ```
 
