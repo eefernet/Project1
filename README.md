@@ -52,7 +52,9 @@ Project1/
 ```
 
 Communication between UI components uses `std::function` callbacks — child components expose public callback members that the parent (`MainComponent`) wires up to its own handler methods. This
-should make it easier for us to add multiple views that will be a child of the main view controller.
+should make it easier for us to add multiple views that will be a child of the main view controller. Its as if we have a stack of cards, and the `MainComponent` contains the stack of cards. We only
+flip to the card by making it `visable` to the user one at a time, while the other cards (`views`) stay hidden until needed. The child components do not have to reference or know about the parent `MainComponent`
+but we use a lambda function in the `MainComponent` constructor to call each specific function regarding that request.
 
 ## Prerequisites
 
