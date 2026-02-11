@@ -181,11 +181,13 @@ void AccountSetupComponent::onCreateAccount()
     }
 
 	//Show success message to make the user feel good about themselves, that for once they did something right in life
+    //Not sure why this is not displaying
     messageLabel.setText("Account created successfully!", juce::dontSendNotification);
     messageLabel.setColour(juce::Label::textColourId, juce::Colours::green);
 
     // Sleep for a second to let the user see the success message
 	_sleep(1000); 
+    //Reset fields for next usage
 	ResetFields();
     
 }
