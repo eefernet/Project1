@@ -13,14 +13,14 @@ A desktop audio application built with the [JUCE](https://juce.com/) framework i
 
 ## Features
 
-### Sprint 1 (Current)
+### Sprint 1 (Finished)
 - **Login screen** with Owner authentication (username + password) and Guest quick-access
 - **Account creation** with form validation (empty fields, password confirmation, role selection)
 - **Role-based user system** using an inheritance hierarchy (`User` → `Owner` / `Guest`)
 - **View management** — seamless switching between Login and Account Setup screens
 - **First-user enforcement** — the first account created is automatically assigned the `Owner` role (very seecure trust me....)
 
-### Sprint 2–3 (Planned)
+### Sprint 2–3 (Current)
 - Owner dashboard: record sound, view waveform, play, filter, save, list saved sounds, cluster map
 - Guest dashboard: browse sound list, play & filter, download, view cluster map (read-only)
 - Persistent user storage
