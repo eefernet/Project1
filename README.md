@@ -9,7 +9,7 @@ A desktop audio application built with the [JUCE](https://juce.com/) framework i
 
 ---
 
-[Trello Task Board] (https://trello.com/invite/b/69964e2da051502ab1943a96/ATTIbed5b57d17a4399478854f212afd3f91946F3DE5/project1)
+[Trello Task Board](https://trello.com/invite/b/69964e2da051502ab1943a96/ATTIbed5b57d17a4399478854f212afd3f91946F3DE5/project1)
 
 ## Features
 
