@@ -45,10 +45,12 @@ Project1/
     ├── Models/                         # Folder that contains all object types
     │   ├── User.h/cpp                  # Abstract base class for all users
     │   ├── Owner.h/cpp                 # Owner subclass (full access)
-    │   └── Guest.h/cpp                 # Guest subclass (limited access)
+    │   ├── Guest.h/cpp                 # Guest subclass (limited access)
+        └── Sound.h/cpp                 # Sound object (ID, audio data, waveform, metadata)
     │
     └── Utils/                          # Folder that contains all repetitive utils
-        └── UserRole.h                  # Enum for Owner / Guest roles
+        ├── UserRole.h                  # Enum for Owner / Guest roles
+        └── Filter.h                    # Filter enum (Pitch, Length, Effect)
 ```
 
 Communication between UI components uses `std::function` callbacks — child components expose public callback members that the parent (`MainComponent`) wires up to its own handler methods. This
