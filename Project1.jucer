@@ -5,6 +5,9 @@
   <MAINGROUP id="JwBuOy" name="Project1">
     <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
       <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils">
+        <FILE id="FRzcBC" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
+        <FILE id="cHWId1" name="Sound.cpp" compile="1" resource="0" file="Source/Sound.cpp"/>
+        <FILE id="k7L9RR" name="Sound.h" compile="0" resource="0" file="Source/Sound.h"/>
         <FILE id="QXRI8k" name="UserRole.h" compile="0" resource="0" file="Source/UserRole.h"/>
       </GROUP>
       <GROUP id="{783C59CF-188C-6038-9B55-7B6A78FE826D}" name="Models">
@@ -69,5 +72,22 @@
         <MODULEPATH id="juce_gui_extra" path="../../dev/JUCE/modules"/>
       </MODULEPATHS>
     </VS2026>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
 </JUCERPROJECT>
