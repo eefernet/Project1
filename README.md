@@ -5,7 +5,7 @@
 
 A desktop audio application built with the [JUCE](https://juce.com/) framework in C++. The app features role-based access control with Owner and Guest user types, each with different levels of access to audio features like recording, playback, filtering, and sound management.
 
-> **Status:** Sprint 1 — Authentication & account management are functional. Audio features and dashboards are planned for Sprints 2–3.
+> **Status:** Sprint 2 —Audio features and dashboards for each respective user to execute actions based on their functions. Playback sound, view a list of sounds, apply filters, create a new sound.
 
 ---
 
