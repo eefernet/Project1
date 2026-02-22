@@ -9,3 +9,10 @@
 */
 
 #pragma once
+
+enum class FilterType
+{
+  Pitch,
+  Length,
+  Effect
+};
