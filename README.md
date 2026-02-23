@@ -5,7 +5,7 @@
 
 A desktop audio application built with the [JUCE](https://juce.com/) framework in C++. The app features role-based access control with Owner and Guest user types, each with different levels of access to audio features like recording, playback, filtering, and sound management.
 
-> **Status:** Sprint 1 — Authentication & account management are functional. Audio features and dashboards are planned for Sprints 2–3.
+> **Status:** Sprint 2 —Audio features and dashboards for each respective user to execute actions based on their functions. Playback sound, view a list of sounds, apply filters, create a new sound.
 
 ---
 
@@ -45,10 +45,12 @@ Project1/
     ├── Models/                         # Folder that contains all object types
     │   ├── User.h/cpp                  # Abstract base class for all users
     │   ├── Owner.h/cpp                 # Owner subclass (full access)
-    │   └── Guest.h/cpp                 # Guest subclass (limited access)
+    │   ├── Guest.h/cpp                 # Guest subclass (limited access)
+        └── Sound.h/cpp                 # Sound object (ID, audio data, waveform, metadata)
     │
     └── Utils/                          # Folder that contains all repetitive utils
-        └── UserRole.h                  # Enum for Owner / Guest roles
+        ├── UserRole.h                  # Enum for Owner / Guest roles
+        └── Filter.h                    # Filter enum (Pitch, Length, Effect)
 ```
 
 Communication between UI components uses `std::function` callbacks — child components expose public callback members that the parent (`MainComponent`) wires up to its own handler methods. This
