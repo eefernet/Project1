@@ -36,19 +36,21 @@ Project1/
     ├── Main.cpp                        # App entry point & window setup
     ├── MainComponent.h/cpp             # Root component — screen routing & user management
     │
-    ├── Views/                          # Folder that contains view controllers
+    ├── Views/
     │   ├── LoginComponent.h/cpp        # Login screen UI & input handling
     │   ├── AccountSetupComponent.h/cpp # Account creation form & validation
-    │   ├── OwnerDashboardComponent.h/cpp # Owner post-login dashboard
-    │   └── GuestDashboardComponent.h/cpp # Guest post-login dashboard
+    │   ├── OwnerDashboardComponent.h/cpp # Owner post-login dashboard (load button, sound list)
+    │   ├── GuestDashboardComponent.h/cpp # Guest post-login dashboard
+    │   └── SoundListComponent.h/cpp    # Scrollable ListBox UI for displaying loaded sounds
     │
-    ├── Models/                         # Folder that contains all object types
+    ├── Models/
     │   ├── User.h/cpp                  # Abstract base class for all users
     │   ├── Owner.h/cpp                 # Owner subclass (full access)
     │   ├── Guest.h/cpp                 # Guest subclass (limited access)
-        └── Sound.h/cpp                 # Sound object (ID, audio data, waveform, metadata)
+    │   ├── Sound.h/cpp                 # Sound object (audio buffer, waveform image, metadata)
+    │   └── SoundLibrary.h/cpp          # Loads & manages a collection of Sound objects from disk
     │
-    └── Utils/                          # Folder that contains all repetitive utils
+    └── Utils/
         ├── UserRole.h                  # Enum for Owner / Guest roles
         └── Filter.h                    # Filter enum (Pitch, Length, Effect)
 ```
