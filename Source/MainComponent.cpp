@@ -62,7 +62,8 @@ MainComponent::MainComponent()
     addChildComponent(guestDashboard);
 
 	//Set first size of the main window, its resizable so size doesnt matter i guess
-    setSize(600, 500);
+    //need to update thee size to see the load button?
+    setSize(800, 600);
 }
 //destructor
 MainComponent::~MainComponent()

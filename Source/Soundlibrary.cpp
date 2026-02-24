@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    SoundLibrary.cpp
+    Soundlibrary.cpp
     Created: 23 Feb 2026
     Author:  eefernet
 
@@ -16,9 +16,12 @@
 * This needs to happen BEFORE we try to load any files, otherwise createReaderFor()
 * won't know how to handle any file type and will always return nullptr.
 */
-Soundlibrary::Soundlibrary(){
+//Sorry about the caps and not caps in filename, too lazy to reefactor after rename
+//i spent 30 minutes trying to realize why it wasnt working and it was because
+//it never compiled because of the L
+SoundLibrary::SoundLibrary(){
     // registerBasicFormats() adds all the built-in format readers.
-    // Without this call, the format manager is empty and can't read anything!
+    // Without this call, the format manager is empty and can't read anything
     formatManager.registerBasicFormats();
 }
 

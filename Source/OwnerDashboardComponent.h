@@ -9,6 +9,8 @@
 */
 #pragma once
 #include <JuceHeader.h>
+#include "Soundlibrary.h"
+#include "SoundListComponent.h"
 
 class OwnerDashboardComponent : public juce::Component
 {
@@ -32,5 +34,9 @@ private:
 
     juce::String username;
 
+    //TODO: REMOVE LATER just using to test UI intigration or change idk
+    SoundLibrary soundlibrary;
+    std::unique_ptr<SoundListComponent> soundList;
+    juce::TextButton loadButton;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OwnerDashboardComponent)
 };

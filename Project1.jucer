@@ -38,6 +38,10 @@
               file="Source/OwnerDashboardComponent.cpp"/>
         <FILE id="S3cKxW" name="OwnerDashboardComponent.h" compile="0" resource="0"
               file="Source/OwnerDashboardComponent.h"/>
+        <FILE id="RzjnJg" name="SoundListComponent.cpp" compile="1" resource="0"
+              file="Source/SoundListComponent.cpp"/>
+        <FILE id="kiWiXY" name="SoundListComponent.h" compile="0" resource="0"
+              file="Source/SoundListComponent.h"/>
       </GROUP>
       <FILE id="yV0XDG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="dQDTtw" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
