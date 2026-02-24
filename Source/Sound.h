@@ -61,8 +61,9 @@ class Sound {
     * TODO: implement actual filter logic — right now this just returns *this unchanged.
     */
   Sound applyFilter(const FilterType& filter);
-  //Return soundID and name
+  //Return soundID, name and price
   int getSoundId() const;
+  juce::String getSoundPrice() const;
   juce::String getName() const;
   /*
     * Returns a reference to the raw audio sample buffer.
@@ -114,6 +115,8 @@ private:
 
   //Unique soundID
   int soundId;
+  //Sound price
+  juce::String soundPrice;
   //Human readable display name
   juce::String name;
   /*

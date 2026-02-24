@@ -8,6 +8,10 @@
   ==============================================================================
 */
 
+/*
+ *TODO: Add price label to the list view
+ */
+
 #pragma once
 #include <JuceHeader.h>
 #include "Soundlibrary.h"
