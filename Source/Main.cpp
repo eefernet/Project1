@@ -8,6 +8,7 @@
 
 #include <JuceHeader.h>
 #include "MainComponent.h"
+#include "LoginTest.h"
 
 //==============================================================================
 class Project1Application  : public juce::JUCEApplication
@@ -23,9 +24,11 @@ public:
     //==============================================================================
     void initialise (const juce::String& commandLine) override
     {
+        DBG("Init running");
+        runLoginTests();
         // This method is where you should put your application's initialisation code..
-
         mainWindow.reset (new MainWindow (getApplicationName()));
+
     }
 
     void shutdown() override

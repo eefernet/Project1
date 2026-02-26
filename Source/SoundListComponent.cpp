@@ -10,9 +10,6 @@
 
 #include "SoundListComponent.h"
 
-
-
-
 //Constructor — sets up the ListBox with some basic styling and registers
 SoundListComponent::SoundListComponent(SoundLibrary& lib) : library(lib){
     //Make this class handle on logic

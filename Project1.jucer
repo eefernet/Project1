@@ -6,6 +6,7 @@
     <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
       <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils">
         <FILE id="FRzcBC" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
+        <FILE id="EhWzlY" name="LoginTest.h" compile="0" resource="0" file="Source/LoginTest.h"/>
         <FILE id="cHWId1" name="Sound.cpp" compile="1" resource="0" file="Source/Sound.cpp"/>
         <FILE id="k7L9RR" name="Sound.h" compile="0" resource="0" file="Source/Sound.h"/>
         <FILE id="QXRI8k" name="UserRole.h" compile="0" resource="0" file="Source/UserRole.h"/>
