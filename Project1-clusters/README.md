@@ -1,12 +1,11 @@
 
 ## Please read everything below before calling ```git clone```
 
-Please click Project1-clusters it has all the file. my mistake didn't know it makes source and jucer file. My bad
 # Project1 — Sound App 
 
 A desktop audio application built with the [JUCE](https://juce.com/) framework in C++. The app features role-based access control with Owner and Guest user types, each with different levels of access to audio features like recording, playback, filtering, and sound management.
 
-> **Status:** Sprint 1 — Authentication & account management are functional. Audio features and dashboards are planned for Sprints 2–3.
+> **Status:** Sprint 2 —Audio features and dashboards for each respective user to execute actions based on their functions. Playback sound, view a list of sounds, apply filters, create a new sound.
 
 ---
 
@@ -37,19 +36,23 @@ Project1/
     ├── Main.cpp                        # App entry point & window setup
     ├── MainComponent.h/cpp             # Root component — screen routing & user management
     │
-    ├── Views/                          # Folder that contains view controllers
+    ├── Views/
     │   ├── LoginComponent.h/cpp        # Login screen UI & input handling
     │   ├── AccountSetupComponent.h/cpp # Account creation form & validation
-    │   ├── OwnerDashboardComponent.h/cpp # Owner post-login dashboard
-    │   └── GuestDashboardComponent.h/cpp # Guest post-login dashboard
+    │   ├── OwnerDashboardComponent.h/cpp # Owner post-login dashboard (load button, sound list)
+    │   ├── GuestDashboardComponent.h/cpp # Guest post-login dashboard
+    │   └── SoundListComponent.h/cpp    # Scrollable ListBox UI for displaying loaded sounds
     │
-    ├── Models/                         # Folder that contains all object types
+    ├── Models/
     │   ├── User.h/cpp                  # Abstract base class for all users
     │   ├── Owner.h/cpp                 # Owner subclass (full access)
-    │   └── Guest.h/cpp                 # Guest subclass (limited access)
+    │   ├── Guest.h/cpp                 # Guest subclass (limited access)
+    │   ├── Sound.h/cpp                 # Sound object (audio buffer, waveform image, metadata)
+    │   └── SoundLibrary.h/cpp          # Loads & manages a collection of Sound objects from disk
     │
-    └── Utils/                          # Folder that contains all repetitive utils
-        └── UserRole.h                  # Enum for Owner / Guest roles
+    └── Utils/
+        ├── UserRole.h                  # Enum for Owner / Guest roles
+        └── Filter.h                    # Filter enum (Pitch, Length, Effect)
 ```
 
 Communication between UI components uses `std::function` callbacks — child components expose public callback members that the parent (`MainComponent`) wires up to its own handler methods. This
