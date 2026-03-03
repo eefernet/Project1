@@ -26,7 +26,9 @@ public:
 
     // Callback for when the user wants to log out
     std::function<void()> onLogout;
+    std::function<void()> viewCluster;
 
+    SoundLibrary& getSoundLibrary();
 private:
     juce::Label titleLabel;
     juce::Label welcomeLabel;
@@ -38,5 +40,6 @@ private:
     SoundLibrary soundlibrary;
     std::unique_ptr<SoundListComponent> soundList;
     juce::TextButton loadButton;
+    juce::TextButton clustButton;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OwnerDashboardComponent)
 };

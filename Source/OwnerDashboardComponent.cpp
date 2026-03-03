@@ -69,6 +69,19 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             });
     };
     addAndMakeVisible(loadButton);
+
+    clustButton.setButtonText("View 2D Cluster");
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    clustButton.onClick = [this] {
+        DBG(">>> CLUSTER BUTTON CLICKED <<<");
+       /* if (currentUserOwner != nullptr)
+            currentUserOwner->viewClusterMap();*/  
+
+        if (viewCluster)
+            viewCluster();
+        };
+    addAndMakeVisible(clustButton);
     DBG("=== OwnerDashboard constructor done ===");
     //Must not be using this right so removing for now
     //DBG("  Children count: " + juce::String(getNumChildComponents()));
@@ -103,6 +116,9 @@ void OwnerDashboardComponent::resized(){
     DBG("  loadButton bounds = " + loadButton.getBounds().toString());
     area.removeFromTop(15);
 
+    clustButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
+    area.removeFromTop(15);
+
     //Logout button at the very bottom
     auto buttonArea = area.removeFromBottom(40);
     logoutButton.setBounds(buttonArea.withSizeKeepingCentre(150, 35));
@@ -115,4 +131,9 @@ void OwnerDashboardComponent::resized(){
 void OwnerDashboardComponent::setUsername(const juce::String& name){
     username = name;
     welcomeLabel.setText("Logged in as Owner: " + username, juce::dontSendNotification);
+}
+
+SoundLibrary& OwnerDashboardComponent::getSoundLibrary()
+{
+    return soundlibrary;
 }

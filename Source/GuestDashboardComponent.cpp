@@ -36,6 +36,18 @@ GuestDashboardComponent::GuestDashboardComponent()
         };
     addAndMakeVisible(logoutButton);
 
+    clustButton.setButtonText("View 2D Cluster");
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    clustButton.onClick = [this] {
+        DBG(">>> CLUSTER BUTTON CLICKED <<<");
+ 
+
+        if (viewCluster)
+            viewCluster();
+        };
+    addAndMakeVisible(clustButton);
+
     setSize(450, 450);
 }
 
@@ -60,6 +72,9 @@ void GuestDashboardComponent::resized()
 
     welcomeLabel.setBounds(area.removeFromTop(40));
     area.removeFromTop(30);
+
+    clustButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
+    area.removeFromTop(20);
 
     // Center the logout button
     auto buttonArea = area.removeFromBottom(40);

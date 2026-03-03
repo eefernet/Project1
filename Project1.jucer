@@ -19,6 +19,9 @@
         <FILE id="wexMYY" name="Soundlibrary.cpp" compile="1" resource="0"
               file="Source/Soundlibrary.cpp"/>
         <FILE id="T9OcOW" name="Soundlibrary.h" compile="0" resource="0" file="Source/Soundlibrary.h"/>
+        <FILE id="o4gpgH" name="ClusterEngine.cpp" compile="1" resource="0"
+              file="Source/ClusterEngine.cpp"/>
+        <FILE id="oVQDAR" name="ClusterEngine.h" compile="0" resource="0" file="Source/ClusterEngine.h"/>
         <FILE id="rYk3bP" name="User.cpp" compile="1" resource="0" file="Source/User.cpp"/>
         <FILE id="IeCAP6" name="User.h" compile="0" resource="0" file="Source/User.h"/>
       </GROUP>
@@ -27,6 +30,12 @@
               file="Source/AccountSetupComponent.cpp"/>
         <FILE id="uQpfsf" name="AccountSetupComponent.h" compile="0" resource="0"
               file="Source/AccountSetupComponent.h"/>
+        <FILE id="rX3fCa" name="ClusterPageComponent.cpp" compile="1" resource="0"
+              file="Source/ClusterPageComponent.cpp"/>
+        <FILE id="UUCBeQ" name="ClusterPageComponent.h" compile="0" resource="0"
+              file="Source/ClusterPageComponent.h"/>
+        <FILE id="xjrf4l" name="ClusterView.cpp" compile="1" resource="0" file="Source/ClusterView.cpp"/>
+        <FILE id="p0BwLt" name="ClusterView.h" compile="0" resource="0" file="Source/ClusterView.h"/>
         <FILE id="IUCrUB" name="GuestDashboardComponent.cpp" compile="1" resource="0"
               file="Source/GuestDashboardComponent.cpp"/>
         <FILE id="vzHk4S" name="GuestDashboardComponent.h" compile="0" resource="0"
