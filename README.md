@@ -1,7 +1,7 @@
 
 ## Please read everything below before calling ```git clone```
 
-Please click Project1-clusters it has all the file. my mistake didn't know it makes source and jucer filw.
+Please click Project1-clusters it has all the file. my mistake didn't know it makes source and jucer file. My bad
 # Project1 — Sound App 
 
 A desktop audio application built with the [JUCE](https://juce.com/) framework in C++. The app features role-based access control with Owner and Guest user types, each with different levels of access to audio features like recording, playback, filtering, and sound management.
