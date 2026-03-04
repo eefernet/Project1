@@ -12,6 +12,7 @@ MainComponent::MainComponent()
     : accountSetup(true), // First user
     nextUserId(1),
     currentView(ViewState::Login),
+    guestDashboard(ownerDashboard.getSoundLibrary()),
     clusterEngine(ownerDashboard.getSoundLibrary()),
     clusterPage(clusterEngine)
 {
@@ -39,12 +40,13 @@ MainComponent::MainComponent()
 
     //Setup place holder dashboards for logout callbacks
     ownerDashboard.onLogout = [this]() {
-        currentUser.reset();
+        currentUser = nullptr;
         showView(ViewState::Login);
         loginScreen.setMessage("Logged out successfully", juce::Colours::green);
         };
     guestDashboard.onLogout = [this]() {
-        currentUser.reset();
+        currentUser = nullptr;
+        guestSession.reset();
         showView(ViewState::Login);
         loginScreen.setMessage("Logged out successfully", juce::Colours::green);
         };
@@ -161,7 +163,7 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
     if (user->login(password))
     {
 		//Login successful, set current user and transition to owner dashboard
-        currentUser.reset(dynamic_cast<Owner*>(user));
+        currentUser = dynamic_cast<Owner*>(user);
 		//Show success message 
         loginScreen.setMessage("Login successful!", juce::Colours::green);
 		//Log output
@@ -187,7 +189,8 @@ void MainComponent::handleGuestLogin()
     DBG("Guest login");
 
     // Create temporary guest user
-    currentUser = std::make_unique<Guest>(0, "Guest", "");
+    guestSession = std::make_unique<Guest>(0, "Guest", "");
+    currentUser = guestSession.get();
     currentUser->displayWelcome();
 
     loginScreen.setMessage("Logged in as Guest", juce::Colours::green);
@@ -239,12 +242,9 @@ void MainComponent::handleAccountCreated(juce::String username, juce::String pas
 
     DBG("Account created successfully. Total users: " << allUsers.size());
 
-    // Show success message and return to login
-    //TODO: now thinking about it, i dont need that sleep call in AccountSetupComponent.cpp. I believe sleep is a blocking call
-    juce::Timer::callAfterDelay(1500, [this]() {
-        showView(ViewState::Login);
-        loginScreen.setMessage("Account created! Please login", juce::Colours::green);
-        });
+    // Switch to login immediately and show success message there
+    showView(ViewState::Login);
+    loginScreen.setMessage("Account created! Please login", juce::Colours::green);
 }
 //This is how we handle when the user cancels accounbt creation, clear everything for reuse and segue to the prev screen (login)
 void MainComponent::handleCancelAccountSetup()

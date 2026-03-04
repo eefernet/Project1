@@ -11,7 +11,7 @@
 
 #include "GuestDashboardComponent.h"
 
-GuestDashboardComponent::GuestDashboardComponent()
+GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib)
 {
     // Title
     titleLabel.setText("Guest Dashboard", juce::dontSendNotification);
@@ -48,11 +48,17 @@ GuestDashboardComponent::GuestDashboardComponent()
         };
     addAndMakeVisible(clustButton);
 
-    setSize(450, 450);
+    addAndMakeVisible(soundList);
 }
 
 GuestDashboardComponent::~GuestDashboardComponent()
 {
+}
+
+void GuestDashboardComponent::visibilityChanged()
+{
+    if (isVisible())
+        soundList.refresh();
 }
 
 void GuestDashboardComponent::paint(juce::Graphics& g)
@@ -65,18 +71,19 @@ void GuestDashboardComponent::paint(juce::Graphics& g)
 
 void GuestDashboardComponent::resized()
 {
-    auto area = getLocalBounds().reduced(40);
+    auto area = getLocalBounds().reduced(20);
 
-    titleLabel.setBounds(area.removeFromTop(50));
-    area.removeFromTop(30);
+    titleLabel.setBounds(area.removeFromTop(40));
+    area.removeFromTop(8);
 
-    welcomeLabel.setBounds(area.removeFromTop(40));
-    area.removeFromTop(30);
+    welcomeLabel.setBounds(area.removeFromTop(28));
+    area.removeFromTop(8);
 
-    clustButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
-    area.removeFromTop(20);
+    auto buttonRow = area.removeFromTop(36);
+    clustButton.setBounds(buttonRow.removeFromLeft(180));
+    buttonRow.removeFromLeft(10);
+    logoutButton.setBounds(buttonRow.removeFromLeft(120));
+    area.removeFromTop(10);
 
-    // Center the logout button
-    auto buttonArea = area.removeFromBottom(40);
-    logoutButton.setBounds(buttonArea.withSizeKeepingCentre(150, 35));
+    soundList.setBounds(area);
 }

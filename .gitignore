@@ -38,7 +38,8 @@ Release/
 *.ilk
 *.pdb
 *.exp
-*.lib (build artifacts, not library source)
+*.lib
+*.map
 
 # Xcode specific files
 xcuserdata/
@@ -62,6 +63,23 @@ $RECYCLE.BIN/
 # Linux specific files (tip my fedora friends)
 *~
 .directory
+*.elf
+
+# CLion / JetBrains IDE
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/httpRequests/
+.idea/dataSources/
+cmake-build-*/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
 
 # JuceLibraryCode - Auto-generated
 JuceLibraryCode/

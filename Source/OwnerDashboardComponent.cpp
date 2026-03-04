@@ -17,15 +17,15 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 {
     // Title
     titleLabel.setText("Owner Dashboard", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
-    titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setFont(juce::Font(15.0f, juce::Font::bold));
+    titleLabel.setJustificationType(juce::Justification::centredLeft);
     titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(titleLabel);
 
     // Welcome message
     welcomeLabel.setText("Logged in as Owner", juce::dontSendNotification);
-    welcomeLabel.setFont(juce::Font(18.0f));
-    welcomeLabel.setJustificationType(juce::Justification::centred);
+    welcomeLabel.setFont(juce::Font(13.0f));
+    welcomeLabel.setJustificationType(juce::Justification::centredLeft);
     welcomeLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
     addAndMakeVisible(welcomeLabel);
 
@@ -112,40 +112,34 @@ void OwnerDashboardComponent::paint(juce::Graphics& g){
 }
 
 void OwnerDashboardComponent::resized(){
-    //TODO: Remove later: Using this to find the load button
-    DBG("OwnerDashboard::resized() bounds = " + getLocalBounds().toString());
-    auto area = getLocalBounds().reduced(20);
+    auto area = getLocalBounds().reduced(10);
 
-    titleLabel.setBounds(area.removeFromTop(50));
-    area.removeFromTop(10);
+    // Top bar: title | welcome label | logout button — all on one row
+    auto topBar = area.removeFromTop(36);
+    titleLabel.setBounds(topBar.removeFromLeft(160));
+    logoutButton.setBounds(topBar.removeFromRight(80));
+    topBar.removeFromRight(6);
+    welcomeLabel.setBounds(topBar);
 
-    welcomeLabel.setBounds(area.removeFromTop(40));
-    area.removeFromTop(15);
+    area.removeFromTop(6);
 
-    //Load button at the top of the remaining space
-    loadButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
-    //TODO: Remove later, just trying to see if the button is redering to thee screen somewhere
-    DBG("  loadButton bounds = " + loadButton.getBounds().toString());
-    area.removeFromTop(15);
+    // Action buttons in a single row
+    auto actionRow = area.removeFromTop(32);
+    int btnWidth = actionRow.getWidth() / 3;
+    loadButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
+    clustButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
+    recorderButton.setBounds(actionRow.reduced(4, 0));
 
-    clustButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
-    area.removeFromTop(15);
+    area.removeFromTop(6);
 
-    recorderButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
-    area.removeFromTop(15);
-
-    //Logout button at the very bottom
-    auto buttonArea = area.removeFromBottom(40);
-    logoutButton.setBounds(buttonArea.withSizeKeepingCentre(150, 35));
-
-    //Sound list fills the rest of the space (if it exists)
+    // Sound list fills remaining space
     if (soundList != nullptr)
-        soundList->setBounds(area.removeFromTop(area.getHeight() - 50));
+        soundList->setBounds(area);
 }
 
 void OwnerDashboardComponent::setUsername(const juce::String& name){
     username = name;
-    welcomeLabel.setText("Logged in as Owner: " + username, juce::dontSendNotification);
+    welcomeLabel.setText("Owner: " + username, juce::dontSendNotification);
 }
 
 SoundLibrary& OwnerDashboardComponent::getSoundLibrary()

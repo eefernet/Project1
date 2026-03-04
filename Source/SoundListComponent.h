@@ -56,6 +56,9 @@ class SoundListComponent : public juce::Component,public juce::ListBoxModel{
     //Callback that fires when the user clicks a sound in the list.
     std::function<void(Sound*)> onSoundSelected;
 
+    // Call this when the library contents change so the list refreshes.
+    void refresh() { listBox.updateContent(); listBox.repaint(); }
+
 private:
     //Reference to the SoundLibrary, just read from it
     SoundLibrary& library;

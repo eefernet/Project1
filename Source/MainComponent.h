@@ -40,7 +40,8 @@ private:
     AudioWorkstationComponent audioWorkstation;
     
     //User management
-    std::unique_ptr<User> currentUser;
+    User* currentUser = nullptr;             // Non-owning — points into allUsers or guestSession
+    std::unique_ptr<User> guestSession;      // Owns the ephemeral guest user (not in allUsers)
     std::vector<std::unique_ptr<User>> allUsers;  // Simple in-memory storage for Sprint 1
     int nextUserId;
 
