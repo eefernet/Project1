@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #include <JuceHeader.h>
 #include "LoginComponent.h"
 #include "AccountSetupComponent.h"
@@ -8,11 +10,6 @@
 #include "Guest.h"
 #include "OwnerDashboardComponent.h"
 #include "GuestDashboardComponent.h"
-#include "ClusterPageComponent.h"
-#include "ClusterEngine.h"
-#include "Soundlibrary.h"
-
-
 
 /*
 * This is the main parent compontent that will manage the different scereens and switching between them.
@@ -34,9 +31,7 @@ private:
     AccountSetupComponent accountSetup;
     OwnerDashboardComponent ownerDashboard;
     GuestDashboardComponent guestDashboard;
-    ClusterEngine clusterEngine;
-    ClusterPageComponent clusterPage;
-    
+
     //User management
     std::unique_ptr<User> currentUser;
     std::vector<std::unique_ptr<User>> allUsers;  // Simple in-memory storage for Sprint 1
@@ -48,11 +43,10 @@ private:
         Login,
         AccountSetup,
         OwnerDashboard,
-        GuestDashboard,
-        ClusterView
+        GuestDashboard
     };
     ViewState currentView;
-    ViewState lastDashboardView = ViewState::Login;
+
     //Event handlers
     void handleOwnerLogin(juce::String username, juce::String password);
     void handleGuestLogin();
@@ -68,8 +62,6 @@ private:
     //Placeholder for future dashboards
     void showOwnerDashboard();
     void showGuestDashboard();
-
-    void showClusterView();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
