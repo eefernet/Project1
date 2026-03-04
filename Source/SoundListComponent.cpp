@@ -75,6 +75,17 @@ void SoundListComponent::paintListBoxItem(int row, juce::Graphics& g,int width, 
     g.drawText(juce::String(meta["sampleRate"]) + " Hz  |  " + meta["format"],
                140, 48, width - 200, 16,
                juce::Justification::centredLeft);
+    // Show price on the right side
+    g.setColour(juce::Colours::white);
+    g.setFont(16.0f);
+
+    // If you stored prices like "5.00" (no $), display with a $
+    auto priceText = "$" + sound->getSoundPrice();
+
+    // Right-aligned in a fixed area on the right
+    g.drawText(priceText,
+        width - 120, 5, 110, 25,
+        juce::Justification::centredRight);
 }
 
 /*
