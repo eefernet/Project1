@@ -64,6 +64,8 @@ class Sound {
   //Return soundID, name and price
   int getSoundId() const;
   juce::String getSoundPrice() const;
+  void setSoundPrice(const juce::String& newPrice);
+  void setSoundPrice(double newPrice);
   juce::String getName() const;
   /*
     * Returns a reference to the raw audio sample buffer.

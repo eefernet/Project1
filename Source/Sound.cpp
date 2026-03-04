@@ -15,7 +15,11 @@
 * that can be displayed in the UI. If the file can't be loaded (wrong format,
 * missing, corrupt), the sound will be marked as invalid (isValid() returns false).
 */
-Sound::Sound(int id, const juce::String& name, const juce::File& sourceFile,juce::AudioFormatManager& formatManager): soundId(id), name(name){
+Sound::Sound(int id,
+    const juce::String& name,
+    const juce::File& sourceFile,
+    juce::AudioFormatManager& formatManager)
+    : soundId(id), soundPrice("0.00"), name(name) {
     //Try to load the audio file from disk into ram
     loadFromFile(sourceFile, formatManager);
     //Only gen a waveform if we actually loaded an audio file
@@ -142,6 +146,16 @@ juce::AudioBuffer<float>& Sound::getAudioBuffer() { return audioBuffer; }
 double Sound::getSampleRate() const { return sampleRate; }
 juce::Image Sound::getWaveForm() const { return waveForm; }
 std::map<std::string, std::string> Sound::getMetaData() const { return metaData; }
+juce::String Sound::getSoundPrice() const { return soundPrice; }
+void Sound::setSoundPrice(const juce::String& newPrice)
+{
+    soundPrice = newPrice.trim();
+}
+
+void Sound::setSoundPrice(double newPrice)
+{
+    soundPrice = juce::String(newPrice, 2); // always 2 decimals
+}
 
 /*
 * Placeholder for audio playback — currently returns false.
