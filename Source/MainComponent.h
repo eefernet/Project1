@@ -11,6 +11,7 @@
 #include "ClusterPageComponent.h"
 #include "ClusterEngine.h"
 #include "Soundlibrary.h"
+#include "AudioWorkstationComponent.h"
 
 
 
@@ -36,6 +37,7 @@ private:
     GuestDashboardComponent guestDashboard;
     ClusterEngine clusterEngine;
     ClusterPageComponent clusterPage;
+    AudioWorkstationComponent audioWorkstation;
     
     //User management
     std::unique_ptr<User> currentUser;
@@ -49,7 +51,8 @@ private:
         AccountSetup,
         OwnerDashboard,
         GuestDashboard,
-        ClusterView
+        ClusterView,
+        RecorderView
     };
     ViewState currentView;
     ViewState lastDashboardView = ViewState::Login;
@@ -70,6 +73,7 @@ private:
     void showGuestDashboard();
 
     void showClusterView();
+    void showRecorderView();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

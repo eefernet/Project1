@@ -58,6 +58,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             [this, chooser](const juce::FileChooser& fc){
                 auto dir = fc.getResult();
                 if (dir.isDirectory()){
+                    loadedSoundsFolder = dir;
                     soundlibrary.loadFromDirectory(dir);
                     soundList = std::make_unique<SoundListComponent>(soundlibrary);
                     soundList->onSoundSelected = [this](Sound* s) {
@@ -82,6 +83,17 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             viewCluster();
         };
     addAndMakeVisible(clustButton);
+
+    recorderButton.setButtonText("Record Sound");
+    recorderButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffff5c5c));
+    recorderButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    recorderButton.onClick = [this] {
+        DBG(">>> RECORDER BUTTON CLICKED <<<");
+        if (viewRecorder)
+            viewRecorder();
+        };
+    addAndMakeVisible(recorderButton);
+
     DBG("=== OwnerDashboard constructor done ===");
     //Must not be using this right so removing for now
     //DBG("  Children count: " + juce::String(getNumChildComponents()));
@@ -117,6 +129,9 @@ void OwnerDashboardComponent::resized(){
     area.removeFromTop(15);
 
     clustButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
+    area.removeFromTop(15);
+
+    recorderButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
     area.removeFromTop(15);
 
     //Logout button at the very bottom

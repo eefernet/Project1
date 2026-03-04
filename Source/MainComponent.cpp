@@ -83,6 +83,23 @@ MainComponent::MainComponent()
             showView(ViewState::ClusterView);
         };
 
+    // Audio Workstation setup
+    audioWorkstation.setVisible(false);
+    addChildComponent(audioWorkstation);
+
+    audioWorkstation.onBack = [this]()
+        {
+            showView(lastDashboardView);
+        };
+
+    ownerDashboard.viewRecorder = [this]()
+        {
+            lastDashboardView = ViewState::OwnerDashboard;
+            // Pass the sounds folder to the workstation so recordings save there
+            audioWorkstation.setSoundsFolder(ownerDashboard.getSoundsFolder());
+            showView(ViewState::RecorderView);
+        };
+
 
 	//Set first size of the main window, its resizable so size doesnt matter i guess
     //need to update thee size to see the load button?
@@ -107,6 +124,7 @@ void MainComponent::resized()
     ownerDashboard.setBounds(getLocalBounds());
     guestDashboard.setBounds(getLocalBounds());
     clusterPage.setBounds(getLocalBounds());
+    audioWorkstation.setBounds(getLocalBounds());
 }
 
 //Logic when the owner tries login, check if he exists, if the password is correct, and if he is an owner. If all checks pass, transition to the owner dashboard
@@ -244,6 +262,7 @@ void MainComponent::showView(ViewState view)
     ownerDashboard.setVisible(view == ViewState::OwnerDashboard);
     guestDashboard.setVisible(view == ViewState::GuestDashboard);
     clusterPage.setVisible(view == ViewState::ClusterView);
+    audioWorkstation.setVisible(view == ViewState::RecorderView);
 	//for the dashboards but since they are not implemented yet, we will just show a message in the login screen when we transition to them
     if (view == ViewState::Login)
     {
@@ -295,4 +314,9 @@ void MainComponent::showClusterView()
 {
     DBG("=== CLUSTER VIEW ===");
     showView(ViewState::ClusterView);
+}
+void MainComponent::showRecorderView()
+{
+    DBG("=== RECORDER VIEW ===");
+    showView(ViewState::RecorderView);
 }
