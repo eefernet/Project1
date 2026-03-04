@@ -9,6 +9,7 @@
 */
 #pragma once
 #include <JuceHeader.h>
+#include "Sound.h"
 #include "Soundlibrary.h"
 #include "SoundListComponent.h"
 
@@ -24,8 +25,13 @@ public:
     // Set the username to display on the dashboard
     void setUsername(const juce::String& name);
 
-    // Callback for when the user wants to log out
+    // Callbacks
     std::function<void()> onLogout;
+    std::function<void()> viewCluster;
+    std::function<void()> viewRecorder;
+
+    SoundLibrary& getSoundLibrary();
+    juce::File getSoundsFolder() const { return loadedSoundsFolder; }
 
 private:
     juce::Label titleLabel;
@@ -38,11 +44,14 @@ private:
     juce::TextEditor priceEditor;
     juce::TextButton setPriceButton{ "Set Price" };
 
-    Sound* selectedSound = nullptr;   // track current selection
+    Sound* selectedSound = nullptr;
 
-    //TODO: REMOVE LATER just using to test UI intigration or change idk
     SoundLibrary soundlibrary;
     std::unique_ptr<SoundListComponent> soundList;
     juce::TextButton loadButton;
+    juce::TextButton clustButton;
+    juce::TextButton recorderButton;
+    juce::File loadedSoundsFolder;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OwnerDashboardComponent)
 };

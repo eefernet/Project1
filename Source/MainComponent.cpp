@@ -1,9 +1,9 @@
 #include "MainComponent.h"
 
 
-//This is the parent view that manages the login and account creation components, as well as user management. 
-// It will also handle the transitions between different views (login, account setup, owner dashboard, guest dashboard) 
-// based on user interactions and roles. For Sprint 1, it focuses on the login and account creation flow, while Sprint 
+//This is the parent view that manages the login and account creation components, as well as user management.
+// It will also handle the transitions between different views (login, account setup, owner dashboard, guest dashboard)
+// based on user interactions and roles. For Sprint 1, it focuses on the login and account creation flow, while Sprint
 // 2 and 3 will expand to include the dashboards and additional features.
 
 //Constructor sets up callbacks and initializes the first view
@@ -11,7 +11,10 @@
 MainComponent::MainComponent()
     : accountSetup(true), // First user
     nextUserId(1),
-    currentView(ViewState::Login)
+    currentView(ViewState::Login),
+    guestDashboard(ownerDashboard.getSoundLibrary()),
+    clusterEngine(ownerDashboard.getSoundLibrary()),
+    clusterPage(clusterEngine)
 {
     // Setup LoginComponent callbacks
     loginScreen.onOwnerLogin = [this](juce::String username, juce::String password) {
@@ -37,14 +40,45 @@ MainComponent::MainComponent()
 
     //Setup place holder dashboards for logout callbacks
     ownerDashboard.onLogout = [this]() {
-        currentUser.reset();
+        currentUser = nullptr;
         showView(ViewState::Login);
         loginScreen.setMessage("Logged out successfully", juce::Colours::green);
         };
     guestDashboard.onLogout = [this]() {
-        currentUser.reset();
+        currentUser = nullptr;
+        guestSession.reset();
         showView(ViewState::Login);
         loginScreen.setMessage("Logged out successfully", juce::Colours::green);
+        };
+
+    clusterPage.back = [this]()
+        {
+            showView(lastDashboardView);
+        };
+
+    ownerDashboard.viewCluster = [this]()
+        {
+            lastDashboardView = ViewState::OwnerDashboard;
+            showView(ViewState::ClusterView);
+        };
+
+    guestDashboard.viewCluster = [this]()
+        {
+            lastDashboardView = ViewState::GuestDashboard;
+            showView(ViewState::ClusterView);
+        };
+
+    // Audio Workstation setup
+    audioWorkstation.onBack = [this]()
+        {
+            showView(lastDashboardView);
+        };
+
+    ownerDashboard.viewRecorder = [this]()
+        {
+            lastDashboardView = ViewState::OwnerDashboard;
+            audioWorkstation.setSoundsFolder(ownerDashboard.getSoundsFolder());
+            showView(ViewState::RecorderView);
         };
 
     // Show login screen initially
@@ -53,16 +87,21 @@ MainComponent::MainComponent()
     accountSetup.setVisible(false);
 	//Add account setup to the main component so we can switch to it when needed
     addChildComponent(accountSetup);
-    //Dashboards are added bbut hidden until we need them
+    //Dashboards are added but hidden until we need them
     ownerDashboard.setVisible(false);
-    //add owner Dashoard as a child to the main component
+    //add owner Dashboard as a child to the main component
     addChildComponent(ownerDashboard);
     guestDashboard.setVisible(false);
 	//Add guest dashboard as a child to the main component
     addChildComponent(guestDashboard);
 
+    clusterPage.setVisible(false);
+    addChildComponent(clusterPage);
+
+    audioWorkstation.setVisible(false);
+    addChildComponent(audioWorkstation);
+
 	//Set first size of the main window, its resizable so size doesnt matter i guess
-    //need to update thee size to see the load button?
     setSize(800, 600);
 }
 //destructor
@@ -83,6 +122,8 @@ void MainComponent::resized()
     accountSetup.setBounds(getLocalBounds());
     ownerDashboard.setBounds(getLocalBounds());
     guestDashboard.setBounds(getLocalBounds());
+    clusterPage.setBounds(getLocalBounds());
+    audioWorkstation.setBounds(getLocalBounds());
 }
 
 //Logic when the owner tries login, check if he exists, if the password is correct, and if he is an owner. If all checks pass, transition to the owner dashboard
@@ -100,7 +141,7 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
         loginScreen.setMessage("User not found", juce::Colours::red);
         //Log output
         DBG("User not found: " << username);
-        //The rest of the code doesnt matter so return 
+        //The rest of the code doesnt matter so return
         return;
     }
 
@@ -118,9 +159,9 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
     // Attempt login
     if (user->login(password))
     {
-		//Login successful, set current user and transition to owner dashboard
-        currentUser.reset(dynamic_cast<Owner*>(user));
-		//Show success message 
+		//Login successful — point currentUser at the entry in allUsers (non-owning)
+        currentUser = dynamic_cast<Owner*>(user);
+		//Show success message
         loginScreen.setMessage("Login successful!", juce::Colours::green);
 		//Log output
         DBG("Owner login successful: " << username);
@@ -128,7 +169,7 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
         // Show welcome message
         currentUser->displayWelcome();
 
-        // Transition to Owner dashboard (Sprint 2)
+        // Transition to Owner dashboard
         showOwnerDashboard();
     }
 	//failure to login, show error message and log output
@@ -144,13 +185,14 @@ void MainComponent::handleGuestLogin()
 {
     DBG("Guest login");
 
-    // Create temporary guest user
-    currentUser = std::make_unique<Guest>(0, "Guest", "");
+    // Create temporary guest user — owned by guestSession, not allUsers
+    guestSession = std::make_unique<Guest>(0, "Guest", "");
+    currentUser = guestSession.get();
     currentUser->displayWelcome();
 
     loginScreen.setMessage("Logged in as Guest", juce::Colours::green);
 
-    // Transition to Guest dashboard (Sprint 2)
+    // Transition to Guest dashboard
     showGuestDashboard();
 }
 
@@ -159,7 +201,7 @@ void MainComponent::handleCreateAccountRequest()
 {
 	//Log output
     DBG("Switching to account creation");
-	//Show account setup view, logic will bbe handled in the AccountSetupComponent and the callback to handleAccountCreated
+	//Show account setup view, logic will be handled in the AccountSetupComponent and the callback to handleAccountCreated
     showView(ViewState::AccountSetup);
 }
 
@@ -197,14 +239,11 @@ void MainComponent::handleAccountCreated(juce::String username, juce::String pas
 
     DBG("Account created successfully. Total users: " << allUsers.size());
 
-    // Show success message and return to login
-    //TODO: now thinking about it, i dont need that sleep call in AccountSetupComponent.cpp. I believe sleep is a blocking call
-    juce::Timer::callAfterDelay(1500, [this]() {
-        showView(ViewState::Login);
-        loginScreen.setMessage("Account created! Please login", juce::Colours::green);
-        });
+    // Switch to login immediately and show success message there
+    showView(ViewState::Login);
+    loginScreen.setMessage("Account created! Please login", juce::Colours::green);
 }
-//This is how we handle when the user cancels accounbt creation, clear everything for reuse and segue to the prev screen (login)
+//This is how we handle when the user cancels account creation, clear everything for reuse and segue to the prev screen (login)
 void MainComponent::handleCancelAccountSetup()
 {
     DBG("Cancelled account setup");
@@ -219,7 +258,9 @@ void MainComponent::showView(ViewState view)
     accountSetup.setVisible(view == ViewState::AccountSetup);
     ownerDashboard.setVisible(view == ViewState::OwnerDashboard);
     guestDashboard.setVisible(view == ViewState::GuestDashboard);
-	//for the dashboards but since they are not implemented yet, we will just show a message in the login screen when we transition to them
+    clusterPage.setVisible(view == ViewState::ClusterView);
+    audioWorkstation.setVisible(view == ViewState::RecorderView);
+
     if (view == ViewState::Login)
     {
         loginScreen.clearInputs();
@@ -249,20 +290,21 @@ void MainComponent::showOwnerDashboard()
     DBG("=== OWNER DASHBOARD ===");
     ownerDashboard.setUsername(currentUser->getUserName());
     showView(ViewState::OwnerDashboard);
-
-    //remove later
-    // For now, just show a message
-    //loginScreen.setMessage("Owner Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
 }
 
 //This is a placeholder!!!
 void MainComponent::showGuestDashboard()
 {
-    
     DBG("=== GUEST DASHBOARD ===");
     showView(ViewState::GuestDashboard);
-
-    //remove later
-    // For now, just show a message
-    //loginScreen.setMessage("Guest Dashboard - Coming in Sprint 2!", juce::Colours::cyan);
+}
+void MainComponent::showClusterView()
+{
+    DBG("=== CLUSTER VIEW ===");
+    showView(ViewState::ClusterView);
+}
+void MainComponent::showRecorderView()
+{
+    DBG("=== RECORDER VIEW ===");
+    showView(ViewState::RecorderView);
 }

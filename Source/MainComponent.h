@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <JuceHeader.h>
 #include "LoginComponent.h"
 #include "AccountSetupComponent.h"
@@ -10,10 +8,14 @@
 #include "Guest.h"
 #include "OwnerDashboardComponent.h"
 #include "GuestDashboardComponent.h"
+#include "ClusterPageComponent.h"
+#include "ClusterEngine.h"
+#include "Soundlibrary.h"
+#include "AudioWorkstationComponent.h"
 
 /*
 * This is the main parent compontent that will manage the different scereens and switching between them.
-* It will also handle user management and authentication logic for Sprint 1, and then we can move that 
+* It will also handle user management and authentication logic for Sprint 1, and then we can move that
 * to a separate UserManager class in Sprint 2 when we implement persistent storage.
 */
 class MainComponent : public juce::Component
@@ -31,9 +33,13 @@ private:
     AccountSetupComponent accountSetup;
     OwnerDashboardComponent ownerDashboard;
     GuestDashboardComponent guestDashboard;
+    ClusterEngine clusterEngine;
+    ClusterPageComponent clusterPage;
+    AudioWorkstationComponent audioWorkstation;
 
     //User management
-    std::unique_ptr<User> currentUser;
+    User* currentUser = nullptr;             // Non-owning — points into allUsers or guestSession
+    std::unique_ptr<User> guestSession;      // Owns the ephemeral guest user (not in allUsers)
     std::vector<std::unique_ptr<User>> allUsers;  // Simple in-memory storage for Sprint 1
     int nextUserId;
 
@@ -43,9 +49,12 @@ private:
         Login,
         AccountSetup,
         OwnerDashboard,
-        GuestDashboard
+        GuestDashboard,
+        ClusterView,
+        RecorderView
     };
     ViewState currentView;
+    ViewState lastDashboardView = ViewState::Login;
 
     //Event handlers
     void handleOwnerLogin(juce::String username, juce::String password);
@@ -62,6 +71,9 @@ private:
     //Placeholder for future dashboards
     void showOwnerDashboard();
     void showGuestDashboard();
+
+    void showClusterView();
+    void showRecorderView();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
