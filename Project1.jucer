@@ -10,6 +10,11 @@
         <FILE id="cHWId1" name="Sound.cpp" compile="1" resource="0" file="Source/Sound.cpp"/>
         <FILE id="k7L9RR" name="Sound.h" compile="0" resource="0" file="Source/Sound.h"/>
         <FILE id="QXRI8k" name="UserRole.h" compile="0" resource="0" file="Source/UserRole.h"/>
+        <FILE id="aLsD01" name="AudioLiveScrollingDisplay.h" compile="0" resource="0"
+              file="Source/AudioLiveScrollingDisplay.h"/>
+        <FILE id="dMuT02" name="DemoUtilities.h" compile="0" resource="0" file="Source/DemoUtilities.h"/>
+        <FILE id="wStn03" name="AudioWorkstationComponent.h" compile="0" resource="0"
+              file="Source/AudioWorkstationComponent.h"/>
       </GROUP>
       <GROUP id="{783C59CF-188C-6038-9B55-7B6A78FE826D}" name="Models">
         <FILE id="bGIlOr" name="Guest.cpp" compile="1" resource="0" file="Source/Guest.cpp"/>
@@ -63,6 +68,10 @@
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -81,12 +90,15 @@
         <MODULEPATH id="juce_audio_basics" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../dev/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Documents/dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../Documents/dev/JUCE/modules"/>
       </MODULEPATHS>
     </VS2026>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
@@ -98,12 +110,15 @@
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_utils" path="../../juce"/>
         <MODULEPATH id="juce_core" path="../../juce"/>
         <MODULEPATH id="juce_data_structures" path="../../juce"/>
         <MODULEPATH id="juce_events" path="../../juce"/>
         <MODULEPATH id="juce_graphics" path="../../juce"/>
         <MODULEPATH id="juce_gui_basics" path="../../juce"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Documents/dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../Documents/dev/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>

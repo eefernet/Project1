@@ -17,15 +17,15 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 {
     // Title
     titleLabel.setText("Owner Dashboard", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
-    titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setFont(juce::Font(15.0f, juce::Font::bold));
+    titleLabel.setJustificationType(juce::Justification::centredLeft);
     titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(titleLabel);
 
     // Welcome message
     welcomeLabel.setText("Logged in as Owner", juce::dontSendNotification);
-    welcomeLabel.setFont(juce::Font(18.0f));
-    welcomeLabel.setJustificationType(juce::Justification::centred);
+    welcomeLabel.setFont(juce::Font(13.0f));
+    welcomeLabel.setJustificationType(juce::Justification::centredLeft);
     welcomeLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
     addAndMakeVisible(welcomeLabel);
 
@@ -37,10 +37,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             onLogout();
         };
     addAndMakeVisible(logoutButton);
-    //TODO: Remove later testing to see if the load button is even loading
-    //DBG("loadButton bounds: " + loadButton.getBounds().toString());
-    //DBG("loadButton visible: " + juce::String(loadButton.isVisible()));
-    //DBG("loadButton parent: " + juce::String(loadButton.getParentComponent() != nullptr));
+
     // Price label
     priceLabel.setText("Price:", juce::dontSendNotification);
     priceLabel.setColour(juce::Label::textColourId, juce::Colours::white);
@@ -54,7 +51,6 @@ OwnerDashboardComponent::OwnerDashboardComponent()
     // Set price button
     setPriceButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightblue);
     setPriceButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
-
     setPriceButton.onClick = [this]
         {
             if (selectedSound == nullptr)
@@ -66,22 +62,17 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             auto text = priceEditor.getText().trim();
             double value = text.getDoubleValue();
 
-            // enforce non-negative and format to 2 decimals
             if (value < 0.0) value = 0.0;
 
             selectedSound->setSoundPrice(value);
             priceEditor.setText(juce::String(value, 2), juce::dontSendNotification);
 
-            // refresh list so the new price shows immediately
             if (soundList != nullptr)
                 soundList->repaint();
         };
-
     addAndMakeVisible(setPriceButton);
-/*
- *TODO: Will change later just a load button to see if UI works
- */
-    //Setup the "Load Sounds" button that lets the user pick a folder
+
+    // Load Sounds button
     loadButton.setButtonText("Load Sounds Folder");
     loadButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
     loadButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
@@ -95,6 +86,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             [this, chooser](const juce::FileChooser& fc){
                 auto dir = fc.getResult();
                 if (dir.isDirectory()){
+                    loadedSoundsFolder = dir;
                     soundlibrary.loadFromDirectory(dir);
                     soundList = std::make_unique<SoundListComponent>(soundlibrary);
                     soundList->onSoundSelected = [this](Sound* s)
@@ -113,11 +105,30 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             });
     };
     addAndMakeVisible(loadButton);
+
+    // Cluster button
+    clustButton.setButtonText("View 2D Cluster");
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    clustButton.onClick = [this] {
+        DBG(">>> CLUSTER BUTTON CLICKED <<<");
+        if (viewCluster)
+            viewCluster();
+        };
+    addAndMakeVisible(clustButton);
+
+    // Recorder button
+    recorderButton.setButtonText("Record Sound");
+    recorderButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffff5c5c));
+    recorderButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    recorderButton.onClick = [this] {
+        DBG(">>> RECORDER BUTTON CLICKED <<<");
+        if (viewRecorder)
+            viewRecorder();
+        };
+    addAndMakeVisible(recorderButton);
+
     DBG("=== OwnerDashboard constructor done ===");
-    //Must not be using this right so removing for now
-    //DBG("  Children count: " + juce::String(getNumChildComponents()));
-    //DBG("  loadButton visible: " + juce::String(loadButton.isVisible() ? "yes" : "no"));
-    //DBG("  loadButton text: " + loadButton.getButtonText());
 }
 
 OwnerDashboardComponent::~OwnerDashboardComponent(){
@@ -131,40 +142,47 @@ void OwnerDashboardComponent::paint(juce::Graphics& g){
 }
 
 void OwnerDashboardComponent::resized(){
-    //TODO: Remove later: Using this to find the load button
-    DBG("OwnerDashboard::resized() bounds = " + getLocalBounds().toString());
-    auto area = getLocalBounds().reduced(20);
+    auto area = getLocalBounds().reduced(10);
 
-    titleLabel.setBounds(area.removeFromTop(50));
-    area.removeFromTop(10);
+    // Top bar: title | welcome label | logout button — all on one row
+    auto topBar = area.removeFromTop(36);
+    titleLabel.setBounds(topBar.removeFromLeft(160));
+    logoutButton.setBounds(topBar.removeFromRight(80));
+    topBar.removeFromRight(6);
+    welcomeLabel.setBounds(topBar);
 
-    welcomeLabel.setBounds(area.removeFromTop(40));
-    area.removeFromTop(15);
+    area.removeFromTop(6);
+
+    // Action buttons in a single row
+    auto actionRow = area.removeFromTop(32);
+    int btnWidth = actionRow.getWidth() / 3;
+    loadButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
+    clustButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
+    recorderButton.setBounds(actionRow.reduced(4, 0));
+
+    area.removeFromTop(6);
 
     // Price controls row
-    auto priceRow = area.removeFromTop(35);
-    priceLabel.setBounds(priceRow.removeFromLeft(60));
-    priceEditor.setBounds(priceRow.removeFromLeft(120));
-    priceRow.removeFromLeft(10);
-    setPriceButton.setBounds(priceRow.removeFromLeft(120));
-    area.removeFromTop(10);
+    auto priceRow = area.removeFromTop(30);
+    priceLabel.setBounds(priceRow.removeFromLeft(50));
+    priceRow.removeFromLeft(4);
+    priceEditor.setBounds(priceRow.removeFromLeft(100));
+    priceRow.removeFromLeft(6);
+    setPriceButton.setBounds(priceRow.removeFromLeft(100));
 
-    //Load button at the top of the remaining space
-    loadButton.setBounds(area.removeFromTop(40).withSizeKeepingCentre(250, 40));
-    //TODO: Remove later, just trying to see if the button is redering to thee screen somewhere
-    DBG("  loadButton bounds = " + loadButton.getBounds().toString());
-    area.removeFromTop(15);
+    area.removeFromTop(6);
 
-    //Logout button at the very bottom
-    auto buttonArea = area.removeFromBottom(40);
-    logoutButton.setBounds(buttonArea.withSizeKeepingCentre(150, 35));
-
-    //Sound list fills the rest of the space (if it exists)
+    // Sound list fills remaining space
     if (soundList != nullptr)
-        soundList->setBounds(area.removeFromTop(area.getHeight() - 50));
+        soundList->setBounds(area);
 }
 
 void OwnerDashboardComponent::setUsername(const juce::String& name){
     username = name;
-    welcomeLabel.setText("Logged in as Owner: " + username, juce::dontSendNotification);
+    welcomeLabel.setText("Owner: " + username, juce::dontSendNotification);
+}
+
+SoundLibrary& OwnerDashboardComponent::getSoundLibrary()
+{
+    return soundlibrary;
 }

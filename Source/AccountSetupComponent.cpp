@@ -11,7 +11,7 @@
 #include "AccountSetupComponent.h"
 
 // Check if this is the first user being created, if so, they must be an owner
-AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(true), isOwner(false)  
+AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstUser), isOwner(false)
 {
     //Title
     titleLabel.setText("Create New Account", juce::dontSendNotification);
@@ -63,7 +63,7 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(true),
 
     //Cancel button and its callback
     cancelButton.setButtonText("Cancel");
-    cancelButton.onClick = [this] { onCancel(); };
+    cancelButton.onClick = [this] { onCancelClicked(); };
     addAndMakeVisible(cancelButton);
 
     //Message Label
