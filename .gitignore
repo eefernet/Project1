@@ -22,6 +22,12 @@ DerivedData/
 *.user
 *.userosscache
 *.sln.docstates
+.idea/.gitignore
+.idea/Project1.iml
+.idea/customTargets.xml
+.idea/editor.xml
+.idea/modules.xml
+.idea/vcs.xml
 
 # Visual Studio specific files
 *.opensdf

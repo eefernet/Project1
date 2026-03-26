@@ -96,10 +96,10 @@ inline std::unique_ptr<juce::InputStream> createAssetInputStream (const char* re
                                                             [[maybe_unused]] AssertAssetExists assertExists = AssertAssetExists::yes)
 {
    #if JUCE_IOS
-    auto assetsDir = File::getSpecialLocation (File::currentExecutableFile)
+    auto assetsDir = juce::File::getSpecialLocation (juce::File::currentExecutableFile)
                           .getSiblingFile ("Assets");
    #elif JUCE_MAC
-    auto assetsDir = File::getSpecialLocation (File::currentExecutableFile)
+    auto assetsDir = juce::File::getSpecialLocation (juce::File::currentExecutableFile)
                           .getParentDirectory().getSiblingFile ("Resources").getChildFile ("Assets");
 
     if (! assetsDir.exists())
