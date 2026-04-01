@@ -20,8 +20,7 @@ public:
     void resized() override;
 
 	//Callbacks for parent component (public facing so we can set them in the parent component)
-    std::function<void(juce::String username, juce::String password)> onOwnerLogin;
-    std::function<void()> onGuestLogin;
+    std::function<void(juce::String username, juce::String password)> onLogin;
     std::function<void()> onCreateAccount;
 
     void setMessage(const juce::String& message, juce::Colour colour);
@@ -36,15 +35,12 @@ private:
     juce::TextEditor usernameInput;
     juce::TextEditor passwordInput;
 
-    juce::TextButton ownerLoginButton;
-    juce::TextButton guestLoginButton;
-    //Might change later
+    juce::TextButton loginButton;
     juce::TextButton createAccountButton;
 
     juce::Label messageLabel;
 
-    void handleOwnerLogin();
-    void handleGuestLogin();
+    void handleLogin();
     void handleCreateAccount();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LoginComponent)

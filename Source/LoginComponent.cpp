@@ -46,17 +46,11 @@ LoginComponent::LoginComponent()
     passwordInput.setFont(juce::Font(14.0f));
     addAndMakeVisible(passwordInput);
 
-    //Owner Login Button
-    ownerLoginButton.setButtonText("Login as Owner");
-    ownerLoginButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff3498db));
-    ownerLoginButton.onClick = [this] { handleOwnerLogin(); };
-    addAndMakeVisible(ownerLoginButton);
-
-    //Guest Login Button
-    guestLoginButton.setButtonText("Continue as Guest");
-    guestLoginButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff95a5a6));
-    guestLoginButton.onClick = [this] { handleGuestLogin(); };
-    addAndMakeVisible(guestLoginButton);
+    //Login Button
+    loginButton.setButtonText("Login");
+    loginButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff3498db));
+    loginButton.onClick = [this] { handleLogin(); };
+    addAndMakeVisible(loginButton);
 
     //Create Account Button
     createAccountButton.setButtonText("Create New Account");
@@ -116,10 +110,8 @@ void LoginComponent::resized()
     area.removeFromTop(30);
 
     //Buttons
-    ownerLoginButton.setBounds(area.removeFromTop(40));
-    area.removeFromTop(12);
-    guestLoginButton.setBounds(area.removeFromTop(40));
-    area.removeFromTop(25);
+    loginButton.setBounds(area.removeFromTop(40));
+    area.removeFromTop(15);
     createAccountButton.setBounds(area.removeFromTop(40));
     area.removeFromTop(20);
 
@@ -127,32 +119,24 @@ void LoginComponent::resized()
     messageLabel.setBounds(area.removeFromTop(30));
 }
 
-//This is the logic if an owner logs in
-void LoginComponent::handleOwnerLogin()
+//This is the logic for login
+void LoginComponent::handleLogin()
 {
     //Grab the input values from the UI and remove whitespace
     juce::String username = usernameInput.getText().trim();
     juce::String password = passwordInput.getText();
 
-    //Validate that the user is not brain dead and actually entered soemthing 
+    //Validate that the user is not brain dead and actually entered soemthing
     if (username.isEmpty() || password.isEmpty())
     {
         //Tell monkey brain what to do, and throw some red at it to make it scary
         setMessage("Please enter username and password", juce::Colours::red);
         return;
     }
-	//Call the handle for the ownber login, which will be implemented in the parent component, 
+	//Call the handle for the login, which will be implemented in the parent component,
     //and will handle the actual login logic and transition to the next screen if successful
-    if (onOwnerLogin)
-        onOwnerLogin(username, password);
-}
-
-//Handle the guest login logic, which is calling the callback to parent so we can transition
-//to the next screen
-void LoginComponent::handleGuestLogin()
-{
-    if (onGuestLogin)
-        onGuestLogin();
+    if (onLogin)
+        onLogin(username, password);
 }
 
 //Handle the create account logic, lots of callbacks bois

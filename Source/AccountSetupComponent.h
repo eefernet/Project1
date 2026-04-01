@@ -27,6 +27,11 @@ public:
     std::function<void(juce::String username, juce::String password, UserRole role)> onAccountCreated;
     std::function<void()> onCancel;
 
+    //Configure the component for guest-only account creation (called from owner dashboard)
+    void setGuestOnly(bool guestOnlyMode);
+    //Update the first user flag (called when accounts are created/deleted)
+    void setFirstUser(bool first);
+
 private:
 	//UI Elements for account setup form
     juce::Label titleLabel;
@@ -55,9 +60,8 @@ private:
 
 	//This is so that if its the first user being created, we can automatically make them an owner and skip the role selection step
     bool isFirstUser;
-	//This is so we can check whos creating the account and only allow owners to create new accounts, guests should not have access to this component at all
-    //honestly, this needs to be rethought maybe, because there should only beb one "Owner"
-    bool isOwner;
+	//When true, forces guest role (used when owner creates guest accounts from dashboard)
+    bool guestOnly;
 
 	//Somethign that juice needs for memory management and debugging
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AccountSetupComponent)

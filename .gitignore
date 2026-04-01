@@ -28,6 +28,8 @@ DerivedData/
 .idea/editor.xml
 .idea/modules.xml
 .idea/vcs.xml
+../.idea/
+.idea/
 
 # Visual Studio specific files
 *.opensdf
