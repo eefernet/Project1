@@ -84,10 +84,14 @@ void GuestDashboardComponent::resized()
     welcomeLabel.setBounds(area.removeFromTop(28));
     area.removeFromTop(8);
 
-    auto buttonRow = area.removeFromTop(36);
-    clustButton.setBounds(buttonRow.removeFromLeft(180));
-    buttonRow.removeFromLeft(10);
-    logoutButton.setBounds(buttonRow.removeFromLeft(120));
+    auto buttonRow = area.removeFromTop(34);
+    int gap = 10;
+    int totalWidth = 170 + gap + 100;
+    int startX = buttonRow.getX() + (buttonRow.getWidth() - totalWidth) / 2;
+    int y = buttonRow.getY();
+    int h = buttonRow.getHeight();
+    clustButton.setBounds(startX, y, 170, h);
+    logoutButton.setBounds(startX + 170 + gap, y, 100, h);
     area.removeFromTop(10);
 
     soundList.setBounds(area);

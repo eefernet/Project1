@@ -91,28 +91,41 @@ void LoginComponent::resized()
 {
     auto area = getLocalBounds().reduced(40);
 
-    //Title
+    //Center column — cap the form width so it doesn't stretch on wide windows
+    int formWidth = juce::jmin(360, area.getWidth());
+    int centreX = area.getX() + (area.getWidth() - formWidth) / 2;
+
+    //Title — full width so it stays centred
     titleLabel.setBounds(area.removeFromTop(50));
     area.removeFromTop(30);
 
     //Username row
     auto row = area.removeFromTop(30);
-    usernameLabel.setBounds(row.removeFromLeft(100));
-    row.removeFromLeft(10);
-    usernameInput.setBounds(row);
+    int labelW = 90;
+    int gap = 10;
+    int inputW = formWidth - labelW - gap;
+    int rowY = row.getY();
+    usernameLabel.setBounds(centreX, rowY, labelW, 30);
+    usernameInput.setBounds(centreX + labelW + gap, rowY, inputW, 30);
     area.removeFromTop(15);
 
     //Password row
     row = area.removeFromTop(30);
-    passwordLabel.setBounds(row.removeFromLeft(100));
-    row.removeFromLeft(10);
-    passwordInput.setBounds(row);
+    rowY = row.getY();
+    passwordLabel.setBounds(centreX, rowY, labelW, 30);
+    passwordInput.setBounds(centreX + labelW + gap, rowY, inputW, 30);
     area.removeFromTop(30);
 
-    //Buttons
-    loginButton.setBounds(area.removeFromTop(40));
+    //Buttons — fixed width, centred
+    int btnWidth = 200;
+    int btnX = area.getX() + (area.getWidth() - btnWidth) / 2;
+
+    row = area.removeFromTop(40);
+    loginButton.setBounds(btnX, row.getY(), btnWidth, 40);
     area.removeFromTop(15);
-    createAccountButton.setBounds(area.removeFromTop(40));
+
+    row = area.removeFromTop(40);
+    createAccountButton.setBounds(btnX, row.getY(), btnWidth, 40);
     area.removeFromTop(20);
 
     //Message

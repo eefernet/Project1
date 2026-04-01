@@ -155,32 +155,39 @@ void OwnerDashboardComponent::paint(juce::Graphics& g){
 void OwnerDashboardComponent::resized(){
     auto area = getLocalBounds().reduced(10);
 
-    // Top bar: title | welcome label | logout button — all on one row
-    auto topBar = area.removeFromTop(36);
-    titleLabel.setBounds(topBar.removeFromLeft(160));
-    logoutButton.setBounds(topBar.removeFromRight(80));
-    topBar.removeFromRight(6);
-    welcomeLabel.setBounds(topBar);
+    // Top bar: title + welcome label centered
+    auto topBar = area.removeFromTop(24);
+    titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setBounds(topBar);
+    // Welcome label overlaid on right side of top bar
+    welcomeLabel.setBounds(topBar.removeFromRight(200));
 
-    area.removeFromTop(6);
+    area.removeFromTop(8);
 
-    // Action buttons in a single row
-    auto actionRow = area.removeFromTop(32);
-    int btnWidth = actionRow.getWidth() / 4;
-    loadButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
-    clustButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
-    recorderButton.setBounds(actionRow.removeFromLeft(btnWidth).reduced(4, 0));
-    createGuestButton.setBounds(actionRow.reduced(4, 0));
+    // All buttons in a single row: 4 action buttons + logout
+    auto btnRow = area.removeFromTop(34);
+    int btnWidth = 160;
+    int gap = 8;
+    int totalWidth = btnWidth * 4 + 100 + gap * 4;  // 4 action buttons + logout + gaps
+    int startX = btnRow.getX() + (btnRow.getWidth() - totalWidth) / 2;
+    int y = btnRow.getY();
+    int h = btnRow.getHeight();
+    loadButton.setBounds(startX, y, btnWidth, h);
+    clustButton.setBounds(startX + (btnWidth + gap), y, btnWidth, h);
+    recorderButton.setBounds(startX + (btnWidth + gap) * 2, y, btnWidth, h);
+    createGuestButton.setBounds(startX + (btnWidth + gap) * 3, y, btnWidth, h);
+    logoutButton.setBounds(startX + (btnWidth + gap) * 3 + btnWidth + gap, y, 100, h);
 
-    area.removeFromTop(6);
+    area.removeFromTop(10);
 
-    // Price controls row
+    // Price controls row — centered below buttons
     auto priceRow = area.removeFromTop(30);
-    priceLabel.setBounds(priceRow.removeFromLeft(50));
-    priceRow.removeFromLeft(4);
-    priceEditor.setBounds(priceRow.removeFromLeft(100));
-    priceRow.removeFromLeft(6);
-    setPriceButton.setBounds(priceRow.removeFromLeft(100));
+    int priceW = 50 + 4 + 100 + 6 + 100;  // label + gap + editor + gap + button
+    int priceX = priceRow.getX() + (priceRow.getWidth() - priceW) / 2;
+    int priceY = priceRow.getY();
+    priceLabel.setBounds(priceX, priceY, 50, 30);
+    priceEditor.setBounds(priceX + 54, priceY, 100, 30);
+    setPriceButton.setBounds(priceX + 160, priceY, 100, 30);
 
     area.removeFromTop(6);
 

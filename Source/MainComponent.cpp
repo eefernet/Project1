@@ -102,7 +102,7 @@ MainComponent::MainComponent()
     addChildComponent(audioWorkstation);
 
 	//Set first size of the main window, its resizable so size doesnt matter i guess
-    setSize(800, 600);
+    setSize(1280, 720);
 }
 //destructor
 MainComponent::~MainComponent()
