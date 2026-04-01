@@ -16,41 +16,43 @@
 #include <JuceHeader.h>
 #include "Soundlibrary.h"
 
+class SoundListComponent;
+
+// Custom row component that holds a play/stop button (and buy button in guest mode) for each row
+class SoundRowComponent : public juce::Component{
+public:
+    SoundRowComponent(SoundListComponent& owner);
+    void setRow(int newRow);
+    void resized() override;
+    void paint(juce::Graphics& g) override;
+    // Let clicks pass through to the ListBox row unless they hit a button
+    bool hitTest(int x, int y) override;
+private:
+    SoundListComponent& owner;
+    int row = -1;
+    juce::TextButton playButton;
+    juce::TextButton buyButton;
+    juce::TextButton editButton;
+};
+
 /*
 * SoundListComponent is a UI component that displays a scrollable list of loaded sounds.
-* It uses JUCE's ListBox widget.
+* It uses JUCE's ListBox widget with custom row components for play buttons.
 *
 * Usage:
 *   SoundListComponent list(mySoundLibrary);
 *   list.onSoundSelected = [](Sound* s) { DBG("Selected: " + s->getName()); };
 *   addAndMakeVisible(list);
 */
-class SoundListComponent : public juce::Component,public juce::ListBoxModel{
+class SoundListComponent : public juce::Component, public juce::ListBoxModel{
     public:
-    /*
-    * Constructor — takes a reference to the SoundLibrary that contains our sounds.
-    * The SoundListComponent just reads from the soundlibrary. It does not have the
-    * ability to modify the soundLibrary. TODO: might need a graphical way to manage the library?
-    *
-    * @param library - Reference to the SoundLibrary to display
-    */
-    SoundListComponent(SoundLibrary& library);
-    //These methods bbelow are called by the ListBox to get data and render rows.
-    //JUCE calls these automatically — we just need to implement them.
+    SoundListComponent(SoundLibrary& library, bool guestMode = false);
+    ~SoundListComponent() override;
 
-    /*
-    * Called by the ListBox to find out how many rows to display.
-    * We just return the number of sounds in our library.
-    */
     int getNumRows() override;
-
-
-    //Called by the ListBox to paint a single row.
     void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
-
-    //Called by the ListBox when the user clicks on a row.
+    juce::Component* refreshComponentForRow(int rowNumber, bool isRowSelected, juce::Component* existingComponentToUpdate) override;
     void listBoxItemClicked(int row, const juce::MouseEvent& event) override;
-    //Called when this component is resized — we use it to make the ListBox fill our bounds
     void resized() override;
 
     //Callback that fires when the user clicks a sound in the list.
@@ -59,10 +61,34 @@ class SoundListComponent : public juce::Component,public juce::ListBoxModel{
     // Call this when the library contents change so the list refreshes.
     void refresh() { listBox.updateContent(); listBox.repaint(); }
 
-private:
-    //Reference to the SoundLibrary, just read from it
-    SoundLibrary& library;
+    // Play/stop a sound by row index — called from row component
+    void togglePlayback(int row);
 
-    //The actual JUCE ListBox widget that handles scrolling, selection, and row rendering.
+    // Check if a given row is currently playing
+    bool isPlaying(int row) const;
+
+    // Get the library reference (used by row components)
+    SoundLibrary& getLibrary() { return library; }
+
+    // Whether this list is in guest mode (sample playback + buy button)
+    bool isGuestMode() const { return guestMode; }
+
+    // Callback for buy button — wire this up from parent
+    std::function<void(Sound*)> onBuySound;
+    // Callback for edit button — wire this up from parent
+    std::function<void(Sound*)> onEditSound;
+
+private:
+    SoundLibrary& library;
+    bool guestMode;
     juce::ListBox listBox;
+
+    // Audio playback
+    juce::AudioDeviceManager deviceManager;
+    juce::AudioSourcePlayer sourcePlayer;
+    std::unique_ptr<juce::MemoryAudioSource> memorySource;
+    juce::AudioBuffer<float> sampleBuffer;  // Holds the 20% sample for guest mode
+    int currentlyPlayingRow = -1;
+
+    void stopPlayback();
 };

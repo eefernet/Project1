@@ -11,7 +11,7 @@
 
 #include "GuestDashboardComponent.h"
 
-GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib)
+GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib, true)
 {
     // Title
     titleLabel.setText("Guest Dashboard", juce::dontSendNotification);
