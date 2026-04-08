@@ -10,7 +10,8 @@
 //temp cluster page please change if there are better ways.
 #include "ClusterPageComponent.h"
 
-ClusterPageComponent::ClusterPageComponent(ClusterEngine& en) : eng(en), clusterView(en)
+ClusterPageComponent::ClusterPageComponent(ClusterEngine& en, SoundLibrary& library)
+: eng(en), clusterView(en, library)
 {
     runButton.setButtonText( "Run Clustering" );
     backButton.setButtonText("Back");
