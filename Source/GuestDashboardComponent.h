@@ -23,6 +23,8 @@ public:
     void resized() override;
     void visibilityChanged() override;
 
+    void setUsername(const juce::String& name);
+
     // Callback for when the user wants to log out
     std::function<void()> onLogout;
     std::function<void()> viewCluster;

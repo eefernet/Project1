@@ -29,6 +29,7 @@ public:
     std::function<void()> onLogout;
     std::function<void()> viewCluster;
     std::function<void()> viewRecorder;
+    std::function<void()> createGuestAccount;
 
     SoundLibrary& getSoundLibrary();
     juce::File getSoundsFolder() const { return loadedSoundsFolder; }
@@ -51,6 +52,7 @@ private:
     juce::TextButton loadButton;
     juce::TextButton clustButton;
     juce::TextButton recorderButton;
+    juce::TextButton createGuestButton;
     juce::File loadedSoundsFolder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OwnerDashboardComponent)

@@ -17,12 +17,8 @@ MainComponent::MainComponent()
     clusterPage(clusterEngine)
 {
     // Setup LoginComponent callbacks
-    loginScreen.onOwnerLogin = [this](juce::String username, juce::String password) {
-        handleOwnerLogin(username, password);
-        };
-	//This is the callback for when the user clicks the "Continue as Guest" button on the login screen
-    loginScreen.onGuestLogin = [this]() {
-        handleGuestLogin();
+    loginScreen.onLogin = [this](juce::String username, juce::String password) {
+        handleLogin(username, password);
         };
 	//This is the callback for when the user clicks the "Create Account" button on the login screen, it will switch to the account setup view
     loginScreen.onCreateAccount = [this]() {
@@ -46,7 +42,6 @@ MainComponent::MainComponent()
         };
     guestDashboard.onLogout = [this]() {
         currentUser = nullptr;
-        guestSession.reset();
         showView(ViewState::Login);
         loginScreen.setMessage("Logged out successfully", juce::Colours::green);
         };
@@ -81,6 +76,11 @@ MainComponent::MainComponent()
             showView(ViewState::RecorderView);
         };
 
+    ownerDashboard.createGuestAccount = [this]()
+        {
+            handleCreateGuestAccountRequest();
+        };
+
     // Show login screen initially
     addAndMakeVisible(loginScreen);
 	//Account setup is added but hidden until needed
@@ -102,7 +102,7 @@ MainComponent::MainComponent()
     addChildComponent(audioWorkstation);
 
 	//Set first size of the main window, its resizable so size doesnt matter i guess
-    setSize(800, 600);
+    setSize(1280, 720);
 }
 //destructor
 MainComponent::~MainComponent()
@@ -126,11 +126,11 @@ void MainComponent::resized()
     audioWorkstation.setBounds(getLocalBounds());
 }
 
-//Logic when the owner tries login, check if he exists, if the password is correct, and if he is an owner. If all checks pass, transition to the owner dashboard
-void MainComponent::handleOwnerLogin(juce::String username, juce::String password)
+//Unified login handler — checks credentials for both owners and guests, routes to correct dashboard
+void MainComponent::handleLogin(juce::String username, juce::String password)
 {
 	//Log output for debugging purposes, we can remove this later
-    DBG("Attempting Owner login: " << username);
+    DBG("Attempting login: " << username);
 
     // Find user
     User* user = findUser(username);
@@ -139,20 +139,7 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
     if (user == nullptr)
     {
         loginScreen.setMessage("User not found", juce::Colours::red);
-        //Log output
         DBG("User not found: " << username);
-        //The rest of the code doesnt matter so return
-        return;
-    }
-
-    // Check if it's an Owner
-    if (user->getUserRole() != UserRole::Owner)
-    {
-        //If the user is found but does not have the owner role show error and return
-        loginScreen.setMessage("This account is not an Owner account", juce::Colours::red);
-        //Log output
-        DBG("User is not an Owner: " << username);
-		//Return because we dont want to attempt login if the user is not an owner
         return;
     }
 
@@ -160,17 +147,19 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
     if (user->login(password))
     {
 		//Login successful — point currentUser at the entry in allUsers (non-owning)
-        currentUser = dynamic_cast<Owner*>(user);
+        currentUser = user;
 		//Show success message
         loginScreen.setMessage("Login successful!", juce::Colours::green);
-		//Log output
-        DBG("Owner login successful: " << username);
+        DBG("Login successful: " << username << " as " << (user->getUserRole() == UserRole::Owner ? "Owner" : "Guest"));
 
         // Show welcome message
         currentUser->displayWelcome();
 
-        // Transition to Owner dashboard
-        showOwnerDashboard();
+        // Route to the correct dashboard based on role
+        if (currentUser->getUserRole() == UserRole::Owner)
+            showOwnerDashboard();
+        else
+            showGuestDashboard();
     }
 	//failure to login, show error message and log output
     else
@@ -180,28 +169,24 @@ void MainComponent::handleOwnerLogin(juce::String username, juce::String passwor
     }
 }
 
-//Logic when the guest tries to login
-void MainComponent::handleGuestLogin()
-{
-    DBG("Guest login");
-
-    // Create temporary guest user — owned by guestSession, not allUsers
-    guestSession = std::make_unique<Guest>(0, "Guest", "");
-    currentUser = guestSession.get();
-    currentUser->displayWelcome();
-
-    loginScreen.setMessage("Logged in as Guest", juce::Colours::green);
-
-    // Transition to Guest dashboard
-    showGuestDashboard();
-}
-
-//Logic for handling when user clicks create account
+//Logic for handling when user clicks create account from login screen
 void MainComponent::handleCreateAccountRequest()
 {
 	//Log output
     DBG("Switching to account creation");
+    //Update first user flag and configure for owner creation from login screen
+    accountSetup.setFirstUser(isFirstUser());
+    accountSetup.setGuestOnly(false);
 	//Show account setup view, logic will be handled in the AccountSetupComponent and the callback to handleAccountCreated
+    showView(ViewState::AccountSetup);
+}
+
+//Logic for handling when owner clicks create guest account from dashboard
+void MainComponent::handleCreateGuestAccountRequest()
+{
+    DBG("Switching to guest account creation from owner dashboard");
+    accountSetup.setFirstUser(false);
+    accountSetup.setGuestOnly(true);
     showView(ViewState::AccountSetup);
 }
 
@@ -239,15 +224,26 @@ void MainComponent::handleAccountCreated(juce::String username, juce::String pas
 
     DBG("Account created successfully. Total users: " << allUsers.size());
 
-    // Switch to login immediately and show success message there
-    showView(ViewState::Login);
-    loginScreen.setMessage("Account created! Please login", juce::Colours::green);
+    // If owner is creating a guest account, return to owner dashboard; otherwise go to login
+    if (currentUser != nullptr && currentUser->getUserRole() == UserRole::Owner)
+    {
+        showView(ViewState::OwnerDashboard);
+    }
+    else
+    {
+        showView(ViewState::Login);
+        loginScreen.setMessage("Account created! Please login", juce::Colours::green);
+    }
 }
-//This is how we handle when the user cancels account creation, clear everything for reuse and segue to the prev screen (login)
+//This is how we handle when the user cancels account creation, return to wherever they came from
 void MainComponent::handleCancelAccountSetup()
 {
     DBG("Cancelled account setup");
-    showView(ViewState::Login);
+    //If the current user is logged in (owner creating guest), go back to owner dashboard
+    if (currentUser != nullptr && currentUser->getUserRole() == UserRole::Owner)
+        showView(ViewState::OwnerDashboard);
+    else
+        showView(ViewState::Login);
 }
 //Helper to switch between views, we can expand this as we add more windows
 void MainComponent::showView(ViewState view)
@@ -296,6 +292,7 @@ void MainComponent::showOwnerDashboard()
 void MainComponent::showGuestDashboard()
 {
     DBG("=== GUEST DASHBOARD ===");
+    guestDashboard.setUsername(currentUser->getUserName());
     showView(ViewState::GuestDashboard);
 }
 void MainComponent::showClusterView()

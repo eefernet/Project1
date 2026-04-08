@@ -11,7 +11,7 @@
 
 #include "GuestDashboardComponent.h"
 
-GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib)
+GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib, true)
 {
     // Title
     titleLabel.setText("Guest Dashboard", juce::dontSendNotification);
@@ -28,7 +28,7 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
     addAndMakeVisible(welcomeLabel);
 
     // Logout button
-    logoutButton.setButtonText("Logout");
+    logoutButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x9a\xaa Logout"));
     logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffe74c3c));
     logoutButton.onClick = [this] {
         if (onLogout)
@@ -36,7 +36,7 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
         };
     addAndMakeVisible(logoutButton);
 
-    clustButton.setButtonText("View 2D Cluster");
+    clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x94\xac View 2D Cluster"));
     clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
     clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     clustButton.onClick = [this] {
@@ -53,6 +53,11 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
 
 GuestDashboardComponent::~GuestDashboardComponent()
 {
+}
+
+void GuestDashboardComponent::setUsername(const juce::String& name)
+{
+    welcomeLabel.setText("Guest: " + name, juce::dontSendNotification);
 }
 
 void GuestDashboardComponent::visibilityChanged()
@@ -79,10 +84,14 @@ void GuestDashboardComponent::resized()
     welcomeLabel.setBounds(area.removeFromTop(28));
     area.removeFromTop(8);
 
-    auto buttonRow = area.removeFromTop(36);
-    clustButton.setBounds(buttonRow.removeFromLeft(180));
-    buttonRow.removeFromLeft(10);
-    logoutButton.setBounds(buttonRow.removeFromLeft(120));
+    auto buttonRow = area.removeFromTop(34);
+    int gap = 10;
+    int totalWidth = 170 + gap + 100;
+    int startX = buttonRow.getX() + (buttonRow.getWidth() - totalWidth) / 2;
+    int y = buttonRow.getY();
+    int h = buttonRow.getHeight();
+    clustButton.setBounds(startX, y, 170, h);
+    logoutButton.setBounds(startX + 170 + gap, y, 100, h);
     area.removeFromTop(10);
 
     soundList.setBounds(area);

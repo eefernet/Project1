@@ -11,7 +11,7 @@
 #include "AccountSetupComponent.h"
 
 // Check if this is the first user being created, if so, they must be an owner
-AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstUser), isOwner(false)
+AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstUser), guestOnly(false)
 {
     //Title
     titleLabel.setText("Create New Account", juce::dontSendNotification);
@@ -48,12 +48,14 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstU
     //Role Selector
     roleLabel.setText("Account Type:", juce::dontSendNotification);
     roleLabel.setJustificationType(juce::Justification::right);
+    roleLabel.setVisible(false);  // Hidden — role is determined automatically
     addAndMakeVisible(roleLabel);
 
     roleSelector.addItem("Owner", 1);
     roleSelector.addItem("Guest", 2);
     roleSelector.setSelectedId(isFirstUser ? 1 : 2);  // First user must be Owner
     roleSelector.setEnabled(!isFirstUser);  // Disable if first user
+    roleSelector.setVisible(false);  // Hidden — role is determined automatically
     addAndMakeVisible(roleSelector);
 
 	//Buttons tied to their individual callbacks
@@ -171,8 +173,14 @@ void AccountSetupComponent::onCreateAccount()
         return;
     }
 
-	//Get the selected role, if this is the first user, they must be an owner, otherwise we can get the role from the selector
-    UserRole selectedRole = (roleSelector.getSelectedId() == 1) ? UserRole::Owner : UserRole::Guest;
+	//Determine the role: first user is always owner, guestOnly mode forces guest, otherwise use selector
+    UserRole selectedRole;
+    if (isFirstUser)
+        selectedRole = UserRole::Owner;
+    else if (guestOnly)
+        selectedRole = UserRole::Guest;
+    else
+        selectedRole = (roleSelector.getSelectedId() == 1) ? UserRole::Owner : UserRole::Guest;
 
 	//Call the callback to create the account in parent component
     if (onAccountCreated)
@@ -216,6 +224,38 @@ void AccountSetupComponent::ResetFields()
     passwordInput.clear();
     confirmPasswordInput.clear();
     messageLabel.setText("", juce::dontSendNotification);
+}
 
+//Configure the component for guest-only account creation (called from owner dashboard)
+void AccountSetupComponent::setGuestOnly(bool guestOnlyMode)
+{
+    guestOnly = guestOnlyMode;
+    if (guestOnly)
+    {
+        titleLabel.setText("Create Guest Account", juce::dontSendNotification);
+        messageLabel.setText("Creating a guest account", juce::dontSendNotification);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+        roleSelector.setSelectedId(2);  // Guest
+    }
+    else
+    {
+        titleLabel.setText("Create New Account", juce::dontSendNotification);
+        if (isFirstUser)
+        {
+            messageLabel.setText("First user must be an Owner", juce::dontSendNotification);
+            messageLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+            roleSelector.setSelectedId(1);  // Owner
+        }
+        else
+        {
+            messageLabel.setText("", juce::dontSendNotification);
+        }
+    }
+}
+
+//Update the first user flag dynamically
+void AccountSetupComponent::setFirstUser(bool first)
+{
+    isFirstUser = first;
 }
 

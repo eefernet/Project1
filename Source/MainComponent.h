@@ -38,8 +38,7 @@ private:
     AudioWorkstationComponent audioWorkstation;
 
     //User management
-    User* currentUser = nullptr;             // Non-owning — points into allUsers or guestSession
-    std::unique_ptr<User> guestSession;      // Owns the ephemeral guest user (not in allUsers)
+    User* currentUser = nullptr;             // Non-owning — points into allUsers
     std::vector<std::unique_ptr<User>> allUsers;  // Simple in-memory storage for Sprint 1
     int nextUserId;
 
@@ -57,11 +56,11 @@ private:
     ViewState lastDashboardView = ViewState::Login;
 
     //Event handlers
-    void handleOwnerLogin(juce::String username, juce::String password);
-    void handleGuestLogin();
+    void handleLogin(juce::String username, juce::String password);
     void handleCreateAccountRequest();
     void handleAccountCreated(juce::String username, juce::String password, UserRole role);
     void handleCancelAccountSetup();
+    void handleCreateGuestAccountRequest();
 
     //Helper methods
     void showView(ViewState view);

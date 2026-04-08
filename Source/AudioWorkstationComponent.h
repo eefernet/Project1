@@ -184,6 +184,13 @@ public:
 
     juce::AudioThumbnail& getAudioThumbnail() { return thumbnail; }
 
+    // Update the playback position needle (called from a timer in the parent component)
+    void setPlaybackPosition(double currentPosition)
+    {
+        playbackPosition = currentPosition;
+        repaint();
+    }
+
     void paint(juce::Graphics& g) override
     {
         juce::Rectangle<int> thumbnailBounds = getLocalBounds();
@@ -198,6 +205,7 @@ private:
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbnailCache{ 10 };
     juce::AudioThumbnail thumbnail{ 512, formatManager, thumbnailCache };
+    double playbackPosition = 0.0;
 
     void changeListenerCallback(juce::ChangeBroadcaster* source) override
     {
@@ -223,6 +231,17 @@ private:
         g.setGradientFill(gradient);
 
         thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
+
+        // Draw playback position needle
+        if (thumbnail.getTotalLength() > 0.0)
+        {
+            auto proportionPlayed = playbackPosition / thumbnail.getTotalLength();
+            auto needleX = thumbnailBounds.getX() + (int)(thumbnailBounds.getWidth() * proportionPlayed);
+
+            g.setColour(juce::Colours::white);
+            g.drawLine((float)needleX, (float)thumbnailBounds.getY(),
+                       (float)needleX, (float)thumbnailBounds.getBottom(), 2.0f);
+        }
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlaybackThumbnail)
@@ -234,7 +253,9 @@ private:
     Recordings are saved to the same folder selected via "Load Sounds Folder".
 */
 class AudioWorkstationComponent : public juce::Component,
-    public juce::ChangeListener
+    public juce::ChangeListener,
+    public juce::Slider::Listener,
+    private juce::Timer
 {
 public:
     enum TransportState
@@ -307,9 +328,23 @@ public:
 
         addAndMakeVisible(playbackThumbnail);
 
+        // Volume slider
+        addAndMakeVisible(volumeSlider);
+        volumeSlider.setRange(0.0, 1.0, 0.01);
+        volumeSlider.setValue(0.5);
+        volumeSlider.setTextValueSuffix(" Volume");
+        volumeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+        volumeSlider.addListener(this);
+
+        // Settings button (audio device selector)
+        addAndMakeVisible(settingsButton);
+        settingsButton.setButtonText("Settings");
+        settingsButton.onClick = [this] { settingsButtonClicked(); };
+
         // Setup audio
         formatManager.registerBasicFormats();
         transportSource.addChangeListener(this);
+        transportSource.setGain((float)volumeSlider.getValue());
         playbackThumbnail.getAudioThumbnail().addChangeListener(this);
 
         juce::RuntimePermissions::request(juce::RuntimePermissions::recordAudio,
@@ -321,10 +356,14 @@ public:
 
         deviceManager.addAudioCallback(&liveAudioScroller);
         deviceManager.addAudioCallback(&recorder);
+
+        // Drive the playback position needle at ~30Hz
+        startTimerHz(30);
     }
 
     ~AudioWorkstationComponent() override
     {
+        stopTimer();
         transportSource.removeChangeListener(this);
         deviceManager.removeAudioCallback(&recorder);
         deviceManager.removeAudioCallback(&liveAudioScroller);
@@ -367,8 +406,25 @@ public:
         playButton.setBounds(playbackButtonArea.removeFromLeft(80));
         playbackButtonArea.removeFromLeft(5);
         stopButton.setBounds(playbackButtonArea.removeFromLeft(80));
+        playbackButtonArea.removeFromLeft(10);
+        settingsButton.setBounds(playbackButtonArea.removeFromLeft(100));
+
+        // Volume slider sits just below the playback buttons
+        volumeSlider.setBounds(area.removeFromTop(30).reduced(4));
 
         playbackThumbnail.setBounds(area.reduced(4));
+    }
+
+    void sliderValueChanged(juce::Slider* slider) override
+    {
+        if (slider == &volumeSlider)
+            transportSource.setGain((float)volumeSlider.getValue());
+    }
+
+    void timerCallback() override
+    {
+        // Push the current transport position to the thumbnail so the needle moves
+        playbackThumbnail.setPlaybackPosition(transportSource.getCurrentPosition());
     }
 
     void changeListenerCallback(juce::ChangeBroadcaster* source) override
@@ -445,16 +501,27 @@ private:
                 auto destFile = c.getResult();
                 if (destFile != juce::File{})
                 {
-                    if (juce::FileInputStream inputStream(lastRecording); inputStream.openedOk())
-                    {
-                        if (auto outputStream = makeOutputStream(juce::URL(destFile)))
-                            outputStream->writeFromInputStream(inputStream, -1);
-                    }
+                    // Native cross-platform file copy. Avoid juce::URL — its output
+                    // stream is for network I/O and hangs on local files (esp. Linux).
+                    if (! lastRecording.copyFileTo(destFile))
+                        DBG("Failed to copy recording to " << destFile.getFullPathName());
                 }
 
                 recordButton.setButtonText("Record");
                 recordingThumbnail.setDisplayFullThumbnail(true);
             });
+    }
+
+    void settingsButtonClicked()
+    {
+        // Stop playback before opening settings to avoid audio device conflicts
+        if (playbackState == Playing || playbackState == Pausing || playbackState == Paused)
+            stopButtonClicked();
+
+        auto deviceSelector = std::make_unique<juce::AudioDeviceSelectorComponent>(
+            deviceManager, 0, 256, 0, 256, false, false, false, false);
+        deviceSelector->setSize(500, 500);
+        juce::CallOutBox::launchAsynchronously(std::move(deviceSelector), settingsButton.getScreenBounds(), nullptr);
     }
 
     void openButtonClicked()
@@ -567,6 +634,8 @@ private:
     juce::TextButton openButton;
     juce::TextButton playButton;
     juce::TextButton stopButton;
+    juce::TextButton settingsButton;
+    juce::Slider volumeSlider;
     PlaybackThumbnail playbackThumbnail;
 
     juce::AudioFormatManager formatManager;
