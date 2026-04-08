@@ -17,7 +17,7 @@
 class ClusterPageComponent : public juce::Component
 {
 public:
-    ClusterPageComponent(ClusterEngine& en);
+    ClusterPageComponent(ClusterEngine& en, SoundLibrary& library);
 
     void paint(juce::Graphics& g) override;
     void resized() override;

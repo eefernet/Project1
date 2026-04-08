@@ -16,7 +16,7 @@
 #include <algorithm>
 #include "Soundlibrary.h"
 #include <limits>
-// TODO (Sprint 3): Add cluster ID grouping structure using <map>. 
+
 
 class ClusterEngine
 {
@@ -25,8 +25,15 @@ public:
     void clusterByLength();
 	void clusterBySimilarity();
     const std::vector<juce::Point<float>>& getPositions() const;
+    const std::vector<int>& getClusterIds() const;
+    bool isLengthMode() const;
 private:
     SoundLibrary& soundLibrary;
     std::vector<juce::Point<float>> positions;
-    float calRMS(Sound *s);
+    std::vector<float> extractWaveformFeature(Sound* s, int target);
+    float waveformDistance(const std::vector<float>& a, const std::vector<float>& b);
+    std::vector<int> clusterIds;
+    bool lengthMode = true;
+
 };
+

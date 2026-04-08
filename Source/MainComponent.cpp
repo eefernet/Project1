@@ -14,7 +14,7 @@ MainComponent::MainComponent()
     currentView(ViewState::Login),
     guestDashboard(ownerDashboard.getSoundLibrary()),
     clusterEngine(ownerDashboard.getSoundLibrary()),
-    clusterPage(clusterEngine)
+    clusterPage(clusterEngine, ownerDashboard.getSoundLibrary())
 {
     // Setup LoginComponent callbacks
     loginScreen.onLogin = [this](juce::String username, juce::String password) {
