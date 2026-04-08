@@ -501,11 +501,10 @@ private:
                 auto destFile = c.getResult();
                 if (destFile != juce::File{})
                 {
-                    if (juce::FileInputStream inputStream(lastRecording); inputStream.openedOk())
-                    {
-                        if (auto outputStream = makeOutputStream(juce::URL(destFile)))
-                            outputStream->writeFromInputStream(inputStream, -1);
-                    }
+                    // Native cross-platform file copy. Avoid juce::URL — its output
+                    // stream is for network I/O and hangs on local files (esp. Linux).
+                    if (! lastRecording.copyFileTo(destFile))
+                        DBG("Failed to copy recording to " << destFile.getFullPathName());
                 }
 
                 recordButton.setButtonText("Record");
