@@ -41,6 +41,9 @@ void Guest::displayWelcome()
 * but for now they are just placeholders to show the intended functionality for a guest user.
 */
 
+//TODO: REMOVING THESE FUNCTIONS BECAUSE I WENT A DIFFERENT ROUTE ON HOW WE PLAYBACK AND VIEW EACH VIEW
+//OLD CODE PLEASE DO NOT USE THESE FUNCTIONS, THEY ARE DEPRECATED
+
 //View the list of availivble sounds.
 void Guest::viewSoundList()
 {

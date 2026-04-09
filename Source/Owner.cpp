@@ -33,6 +33,8 @@ void Owner::displayWelcome()
     DBG("=================================");
 }
 
+//TODO: REMOVING THESE FUNCTIONS BECAUSE I WENT A DIFFERENT ROUTE ON HOW WE PLAYBACK AND VIEW EACH VIEW
+//OLD CODE PLEASE DO NOT USE THESE FUNCTIONS, THEY ARE DEPRECATED
 void Owner::recordSound()
 {
     DBG("Owner::recordSound() - TODO: Implement audio recording");
