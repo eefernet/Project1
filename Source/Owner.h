@@ -19,14 +19,7 @@ public:
     ~Owner() override;
 
     // Owner-specific methods from your UML
-    void recordSound();
-    void viewWaveForm();
-    void playSound();
-    void filterSound();
-    void saveSound();
-    void listSavedSounds();
-    void viewClusterMap();
-    void createGuestAccount();
+
 
     void displayWelcome() override;
 };

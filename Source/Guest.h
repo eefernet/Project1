@@ -23,12 +23,6 @@ public:
     Guest(int userId, juce::String userName, juce::String password);
     ~Guest() override;
 
-    // Guest-specific methods from your UML
-    void viewSoundList();
-    void viewClusterMap();
-    void playAndFilter();
-    void downloadSound();
-
     //Override and display the welcome message for a guest user
     void displayWelcome() override;
 };

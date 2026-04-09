@@ -43,31 +43,3 @@ void Guest::displayWelcome()
 
 //TODO: REMOVING THESE FUNCTIONS BECAUSE I WENT A DIFFERENT ROUTE ON HOW WE PLAYBACK AND VIEW EACH VIEW
 //OLD CODE PLEASE DO NOT USE THESE FUNCTIONS, THEY ARE DEPRECATED
-
-//View the list of availivble sounds.
-void Guest::viewSoundList()
-{
-    DBG("Guest::viewSoundList() - TODO: Display available sounds");
-    //Spint 2: Implement sound list view
-}
-
-//View the cluster map
-void Guest::viewClusterMap()
-{
-    DBG("Guest::viewClusterMap() - TODO: Display cluster map (read-only)");
-    //Sprint 2: Implement cluster map view
-}
-
-//Play sounds with oro without filters
-void Guest::playAndFilter()
-{
-    DBG("Guest::playAndFilter() - TODO: Play sound with or withjout filters");
-    //Sprint 3: Implement playback with filters
-}
-
-//download sound 
-void Guest::downloadSound()
-{
-    DBG("Guest::downloadSound() - TODO: Download sound file");
-    //Sprint 3: Implement download functionality
-}
