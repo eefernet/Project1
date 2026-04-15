@@ -16,6 +16,8 @@ MainComponent::MainComponent()
     clusterEngine(ownerDashboard.getSoundLibrary()),
     clusterPage(clusterEngine, ownerDashboard.getSoundLibrary())
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(&uiController);
+
     // Setup LoginComponent callbacks
     loginScreen.onLogin = [this](juce::String username, juce::String password) {
         handleLogin(username, password);
@@ -107,12 +109,13 @@ MainComponent::MainComponent()
 //destructor
 MainComponent::~MainComponent()
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
 }
 
 //Painting method
 void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colour(0xff1a1a1a));
+    g.fillAll(juce::Colour(UIController::bg));
 }
 
 //setting bounds for the child components

@@ -11,13 +11,14 @@
 #include "OwnerDashboardComponent.h"
 #include "SoundListComponent.h"
 #include "Soundlibrary.h"
+#include "UIController.h"
 
 
 OwnerDashboardComponent::OwnerDashboardComponent()
 {
     // Title
     titleLabel.setText("Owner Dashboard", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(15.0f, juce::Font::bold));
+    titleLabel.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 22.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centredLeft);
     titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(titleLabel);
@@ -26,31 +27,36 @@ OwnerDashboardComponent::OwnerDashboardComponent()
     welcomeLabel.setText("Logged in as Owner", juce::dontSendNotification);
     welcomeLabel.setFont(juce::Font(13.0f));
     welcomeLabel.setJustificationType(juce::Justification::centredLeft);
-    welcomeLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
+    welcomeLabel.setJustificationType(juce::Justification::centredRight);
+    welcomeLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::accent));
     addAndMakeVisible(welcomeLabel);
 
-    // Logout button
-    logoutButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x9a\xaa Logout"));
+    // Logout button — power symbol (⏻)
+    logoutButton.setButtonText(juce::CharPointer_UTF8("\xe2\x8f\xbb Logout"));
     logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffe74c3c));
+    logoutButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::danger));
     logoutButton.onClick = [this] {
         if (onLogout)
             onLogout();
         };
     addAndMakeVisible(logoutButton);
 
-    // Price label
-    priceLabel.setText("Price:", juce::dontSendNotification);
-    priceLabel.setColour(juce::Label::textColourId, juce::Colours::white);
-    addAndMakeVisible(priceLabel);
-
-    // Price editor
-    priceEditor.setText("0.00");
+    // Price editor — hidden until a sound is selected. Configure font BEFORE setText
+    // so initial text is drawn in the correct size/face.
+    priceEditor.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 20.0f, juce::Font::bold));
+    priceEditor.setJustification(juce::Justification::centred);
+    priceEditor.setIndents(6, 6);
     priceEditor.setInputRestrictions(0, "0123456789."); // only allow numbers and dot
-    addAndMakeVisible(priceEditor);
+    priceEditor.setTextToShowWhenEmpty("0.00", juce::Colour(UIController::textDim));
+    priceEditor.setText("0.00");
+    priceEditor.setVisible(false);
+    addChildComponent(priceEditor);
 
-    // Set price button
+    // Set price button — money bag emoji
+    setPriceButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x92\xb0 Set Price"));
     setPriceButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightblue);
-    setPriceButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    setPriceButton.setVisible(false);
+    // Note: addChildComponent used below instead of addAndMakeVisible so it stays hidden until a sound is selected.
     setPriceButton.onClick = [this]
         {
             if (selectedSound == nullptr)
@@ -70,12 +76,11 @@ OwnerDashboardComponent::OwnerDashboardComponent()
             if (soundList != nullptr)
                 soundList->repaint();
         };
-    addAndMakeVisible(setPriceButton);
+    addChildComponent(setPriceButton);
 
-    // Load Sounds button
-    loadButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x8e\xb5\xf0\x9f\x93\x82 Load Sounds"));
+    // Load Sounds button — inbox tray emoji (📥)
+    loadButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\xa5 Load Sounds"));
     loadButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
-    loadButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     loadButton.onClick = [this]{
         DBG(">>> LOAD BUTTON CLICKED <<<");
         auto chooser = std::make_shared<juce::FileChooser>(
@@ -93,10 +98,16 @@ OwnerDashboardComponent::OwnerDashboardComponent()
                         {
                             selectedSound = s;
 
-                            if (selectedSound != nullptr)
+                            const bool has = selectedSound != nullptr;
+                            priceEditor.setVisible(has);
+                            setPriceButton.setVisible(has);
+
+                            if (has)
                             {
                                 DBG("Selected sound: " + selectedSound->getName());
                                 priceEditor.setText(selectedSound->getSoundPrice(), juce::dontSendNotification);
+                                priceEditor.applyFontToAllText(
+                                    juce::Font(juce::Font::getDefaultMonospacedFontName(), 20.0f, juce::Font::bold));
                             }
                         };
                     addAndMakeVisible(*soundList);
@@ -106,10 +117,9 @@ OwnerDashboardComponent::OwnerDashboardComponent()
     };
     addAndMakeVisible(loadButton);
 
-    // Cluster button
-    clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x94\xac View 2D Cluster"));
+    // Cluster button — bar chart emoji
+    clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\x8a View 2D Cluster"));
     clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
-    clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     clustButton.onClick = [this] {
         DBG(">>> CLUSTER BUTTON CLICKED <<<");
         if (viewCluster)
@@ -120,7 +130,6 @@ OwnerDashboardComponent::OwnerDashboardComponent()
     // Recorder button
     recorderButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x8e\x99 Record Sound"));
     recorderButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffff5c5c));
-    recorderButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     recorderButton.onClick = [this] {
         DBG(">>> RECORDER BUTTON CLICKED <<<");
         if (viewRecorder)
@@ -128,10 +137,9 @@ OwnerDashboardComponent::OwnerDashboardComponent()
         };
     addAndMakeVisible(recorderButton);
 
-    // Create Guest Account button
-    createGuestButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x91\xa4 Create Guest Account"));
+    // Create Guest Account button — people emoji
+    createGuestButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x91\xa5 Create Guest Account"));
     createGuestButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2ecc71));
-    createGuestButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     createGuestButton.onClick = [this] {
         DBG(">>> CREATE GUEST ACCOUNT CLICKED <<<");
         if (createGuestAccount)
@@ -146,52 +154,60 @@ OwnerDashboardComponent::~OwnerDashboardComponent(){
 }
 
 void OwnerDashboardComponent::paint(juce::Graphics& g){
-    g.fillAll(juce::Colour(0xff2c3e50));
-
-    g.setColour(juce::Colours::white.withAlpha(0.2f));
-    g.drawRect(getLocalBounds().reduced(20), 2);
+    g.fillAll(juce::Colour(UIController::bg));
 }
 
 void OwnerDashboardComponent::resized(){
     auto area = getLocalBounds().reduced(10);
 
-    // Top bar: title + welcome label centered
-    auto topBar = area.removeFromTop(24);
-    titleLabel.setJustificationType(juce::Justification::centred);
-    titleLabel.setBounds(topBar);
-    // Welcome label overlaid on right side of top bar
-    welcomeLabel.setBounds(topBar.removeFromRight(200));
+    const int btnH     = 42;
+    const int logoutW  = 150;
+    const int guestW   = 230;
+    const int ownerW   = 200;
+    const int itemGap  = 10;
+
+    // Title row at the top
+    auto titleRow = area.removeFromTop(34);
+    titleLabel.setJustificationType(juce::Justification::centredLeft);
+    titleLabel.setBounds(titleRow.reduced(4, 0));
 
     area.removeFromTop(8);
 
-    // All buttons in a single row: 4 action buttons + logout
-    auto btnRow = area.removeFromTop(34);
-    int btnWidth = 160;
-    int gap = 8;
-    int totalWidth = btnWidth * 4 + 100 + gap * 4;  // 4 action buttons + logout + gaps
-    int startX = btnRow.getX() + (btnRow.getWidth() - totalWidth) / 2;
-    int y = btnRow.getY();
-    int h = btnRow.getHeight();
-    loadButton.setBounds(startX, y, btnWidth, h);
-    clustButton.setBounds(startX + (btnWidth + gap), y, btnWidth, h);
-    recorderButton.setBounds(startX + (btnWidth + gap) * 2, y, btnWidth, h);
-    createGuestButton.setBounds(startX + (btnWidth + gap) * 3, y, btnWidth, h);
-    logoutButton.setBounds(startX + (btnWidth + gap) * 3 + btnWidth + gap, y, 100, h);
+    // Bottom row: [Owner: xxx] [Logout] [Create Guest Account], in a single centered line
+    auto bottomBar = area.removeFromBottom(btnH);
+    const int bottomTotal = ownerW + itemGap + guestW + itemGap + logoutW;
+    const int bottomX     = bottomBar.getX() + (bottomBar.getWidth() - bottomTotal) / 2;
+    const int bottomY     = bottomBar.getY();
+    welcomeLabel.setJustificationType(juce::Justification::centred);
+    welcomeLabel.setBounds     (bottomX,                                          bottomY, ownerW,  btnH);
+    createGuestButton.setBounds(bottomX + ownerW + itemGap,                       bottomY, guestW,  btnH);
+    logoutButton.setBounds     (bottomX + ownerW + itemGap + guestW + itemGap,    bottomY, logoutW, btnH);
 
-    area.removeFromTop(10);
+    area.removeFromBottom(10); // gap above the bottom bar
 
-    // Price controls row — centered below buttons
-    auto priceRow = area.removeFromTop(30);
-    int priceW = 50 + 4 + 100 + 6 + 100;  // label + gap + editor + gap + button
-    int priceX = priceRow.getX() + (priceRow.getWidth() - priceW) / 2;
-    int priceY = priceRow.getY();
-    priceLabel.setBounds(priceX, priceY, 50, 30);
-    priceEditor.setBounds(priceX + 54, priceY, 100, 30);
-    setPriceButton.setBounds(priceX + 160, priceY, 100, 30);
+    // Main content: left column of stacked action buttons, right side for sound list
+    const int mainBtnW   = 210;
+    const int mainBtnGap = 10;
+    auto leftCol = area.removeFromLeft(mainBtnW);
 
-    area.removeFromTop(6);
+    loadButton.setBounds    (leftCol.removeFromTop(btnH));
+    leftCol.removeFromTop(mainBtnGap);
+    clustButton.setBounds   (leftCol.removeFromTop(btnH));
+    leftCol.removeFromTop(mainBtnGap);
+    recorderButton.setBounds(leftCol.removeFromTop(btnH));
 
-    // Sound list fills remaining space
+    // Price controls stacked under the action buttons (only laid out; visibility
+    // is toggled by selection). Editor on top, Set Price right below.
+    leftCol.removeFromTop(mainBtnGap + 6);
+    priceEditor.setBounds   (leftCol.removeFromTop(btnH));
+    leftCol.removeFromTop(6);
+    setPriceButton.setBounds(leftCol.removeFromTop(btnH));
+
+    // Label is no longer displayed; keep it off-screen so layout isn't affected.
+    priceLabel.setVisible(false);
+
+    area.removeFromLeft(12); // gap between buttons and list
+
     if (soundList != nullptr)
         soundList->setBounds(area);
 }

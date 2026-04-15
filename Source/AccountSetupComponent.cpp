@@ -9,19 +9,22 @@
 */
 
 #include "AccountSetupComponent.h"
+#include "UIController.h"
 
 // Check if this is the first user being created, if so, they must be an owner
 AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstUser), guestOnly(false)
 {
     //Title
     titleLabel.setText("Create New Account", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(24.0f, juce::Font::bold));
+    titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(titleLabel);
 
     //Username
     usernameLabel.setText("Username:", juce::dontSendNotification);
     usernameLabel.setJustificationType(juce::Justification::right);
+    usernameLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(usernameLabel);
 
     usernameInput.setTextToShowWhenEmpty("Enter username", juce::Colours::grey);
@@ -30,6 +33,7 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstU
     //Password
     passwordLabel.setText("Password:", juce::dontSendNotification);
     passwordLabel.setJustificationType(juce::Justification::right);
+    passwordLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(passwordLabel);
 
     passwordInput.setPasswordCharacter('*');
@@ -39,6 +43,7 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstU
     //Confirm Password
     confirmPasswordLabel.setText("Confirm Password:", juce::dontSendNotification);
     confirmPasswordLabel.setJustificationType(juce::Justification::right);
+    confirmPasswordLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     addAndMakeVisible(confirmPasswordLabel);
 
     confirmPasswordInput.setPasswordCharacter('*');
@@ -90,9 +95,7 @@ AccountSetupComponent::~AccountSetupComponent()
 //This is where all the custom drawing happens
 void AccountSetupComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.setColour(juce::Colours::grey);
-    g.drawRect(getLocalBounds().reduced(20), 2);
+    g.fillAll(juce::Colour(UIController::bg));
 }
 
 //Setting bounds for UI elements, onyl called when the window is resized
@@ -100,46 +103,52 @@ void AccountSetupComponent::resized()
 {
     auto area = getLocalBounds().reduced(40);
 
-    titleLabel.setBounds(area.removeFromTop(40));
-    area.removeFromTop(20);
+    // Center the form column — cap width so fields don't stretch across the window
+    const int formWidth = juce::jmin(380, area.getWidth());
+    const int centreX   = area.getX() + (area.getWidth() - formWidth) / 2;
+    const int labelW    = 130;
+    const int gap       = 10;
+    const int inputW    = formWidth - labelW - gap;
+    const int rowH      = 30;
+    const int rowGap    = 12;
 
-    //Username (we have to do this for every element)
-    auto row = area.removeFromTop(30);
-    usernameLabel.setBounds(row.removeFromLeft(150));
-    row.removeFromLeft(10);
-    usernameInput.setBounds(row);
-    area.removeFromTop(15);
+    // Title — full width centred
+    titleLabel.setBounds(area.removeFromTop(50));
+    area.removeFromTop(24);
 
-    //Password
-    row = area.removeFromTop(30);
-    passwordLabel.setBounds(row.removeFromLeft(150));
-    row.removeFromLeft(10);
-    passwordInput.setBounds(row);
-    area.removeFromTop(15);
+    auto placeRow = [&](juce::Label& lbl, juce::Component& field)
+    {
+        auto row = area.removeFromTop(rowH);
+        int y = row.getY();
+        lbl.setBounds   (centreX,                   y, labelW, rowH);
+        field.setBounds (centreX + labelW + gap,    y, inputW, rowH);
+        area.removeFromTop(rowGap);
+    };
 
-    //Confirm Password
-    row = area.removeFromTop(30);
-    confirmPasswordLabel.setBounds(row.removeFromLeft(150));
-    row.removeFromLeft(10);
-    confirmPasswordInput.setBounds(row);
-    area.removeFromTop(15);
+    placeRow(usernameLabel,        usernameInput);
+    placeRow(passwordLabel,        passwordInput);
+    placeRow(confirmPasswordLabel, confirmPasswordInput);
 
-    //Role
-    row = area.removeFromTop(30);
-    roleLabel.setBounds(row.removeFromLeft(150));
-    row.removeFromLeft(10);
-    roleSelector.setBounds(row);
-    area.removeFromTop(30);
+    // Role row (hidden but still laid out for safety)
+    if (roleLabel.isVisible() || roleSelector.isVisible())
+        placeRow(roleLabel, roleSelector);
 
-    //Buttons
-    auto buttonRow = area.removeFromTop(35);
-    createAccountButton.setBounds(buttonRow.removeFromLeft(150));
-    buttonRow.removeFromLeft(20);
-    cancelButton.setBounds(buttonRow.removeFromLeft(150));
-    area.removeFromTop(15);
+    area.removeFromTop(18);
 
-    //Message
-    messageLabel.setBounds(area.removeFromTop(30));
+    // Buttons — fixed width, centered as a pair
+    const int btnW = 170;
+    const int btnH = 38;
+    const int btnGap = 20;
+    const int btnTotal = btnW * 2 + btnGap;
+    const int btnX = area.getX() + (area.getWidth() - btnTotal) / 2;
+
+    auto buttonRow = area.removeFromTop(btnH);
+    createAccountButton.setBounds(btnX,                        buttonRow.getY(), btnW, btnH);
+    cancelButton.setBounds       (btnX + btnW + btnGap,        buttonRow.getY(), btnW, btnH);
+    area.removeFromTop(18);
+
+    // Message — centered under buttons
+    messageLabel.setBounds(centreX, area.getY(), formWidth, rowH);
 }
 
 //This is where we handle the logic for creating an account, including validation and calling the callback to create the account in the parent component

@@ -9,6 +9,7 @@
 */
 
 #include "SoundListComponent.h"
+#include "UIController.h"
 
 // ============================================================================
 // SoundRowComponent — custom row with a play/stop button
@@ -104,7 +105,7 @@ bool SoundRowComponent::hitTest(int x, int y)
 SoundListComponent::SoundListComponent(SoundLibrary& lib, bool guest) : library(lib), guestMode(guest){
     listBox.setModel(this);
     listBox.setRowHeight(70);
-    listBox.setColour(juce::ListBox::backgroundColourId, juce::Colour(0xff1e1e1e));
+    listBox.setColour(juce::ListBox::backgroundColourId, juce::Colour(UIController::bg));
     addAndMakeVisible(listBox);
 
     // Initialize audio device for playback
@@ -132,42 +133,58 @@ void SoundListComponent::paintListBoxItem(int row, juce::Graphics& g,int width, 
     if (sound == nullptr)
         return;
 
-    if (selected)
-        g.fillAll(juce::Colour(0xff3a506b));
-    else
-        g.fillAll(juce::Colour(0xff2c3e50));
+    // Alternating row bands so lines feel like a terminal list
+    auto base = (row % 2 == 0) ? juce::Colour(UIController::bg)
+                               : juce::Colour(UIController::bgRaised);
+    g.fillAll(base);
 
-    // Highlight currently playing row
-    if (row == currentlyPlayingRow)
+    if (selected)
     {
-        g.setColour(juce::Colours::limegreen.withAlpha(0.15f));
+        g.setColour(juce::Colour(UIController::accent).withAlpha(0.18f));
         g.fillAll();
     }
+
+    if (row == currentlyPlayingRow)
+    {
+        g.setColour(juce::Colour(UIController::accent).withAlpha(0.12f));
+        g.fillAll();
+    }
+
+    // Thin left accent stripe for the active row
+    if (selected || row == currentlyPlayingRow)
+    {
+        g.setColour(juce::Colour(UIController::accent));
+        g.fillRect(0, 0, 2, height);
+    }
+
+    // Subtle bottom divider
+    g.setColour(juce::Colour(UIController::border));
+    g.fillRect(0, height - 1, width, 1);
 
     auto wf = sound->getWaveForm();
     if (wf.isValid()){
         g.drawImage(wf, juce::Rectangle<float>(8, 5, 120, (float)height - 10));
     }
 
-    g.setColour(juce::Colours::white);
-    g.setFont(16.0f);
+    g.setColour(juce::Colour(UIController::text));
+    g.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 16.0f, juce::Font::bold));
     g.drawText(sound->getName(),140, 5, width - 340, 25, juce::Justification::centredLeft);
 
-    g.setColour(juce::Colours::grey);
-    g.setFont(12.0f);
-    g.drawText("Duration: " + sound->getDurationString(),140, 30, width - 340, 20,juce::Justification::centredLeft);
+    g.setColour(juce::Colour(UIController::textDim));
+    g.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 14.0f, juce::Font::plain));
+    g.drawText("Duration: " + sound->getDurationString(), 140, 32, width - 340, 20, juce::Justification::centredLeft);
 
     auto meta = sound->getMetaData();
     g.drawText(juce::String(meta["sampleRate"]) + " Hz  |  " + meta["format"],
-               140, 48, width - 340, 16,
+               140, 52, width - 340, 18,
                juce::Justification::centredLeft);
 
-    // Price on the right
-    g.setColour(juce::Colours::white);
-    g.setFont(16.0f);
+    // Price on the right — vertically centered in the row
+    g.setColour(juce::Colour(UIController::accent));
+    g.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 16.0f, juce::Font::bold));
     auto priceText = "$" + sound->getSoundPrice();
     g.drawText(priceText,
-        width - 120, 5, 110, 25,
+        width - 120, 0, 110, height,
         juce::Justification::centredRight);
 }
 
