@@ -21,41 +21,41 @@ LoginComponent::LoginComponent()
     titleLabel.setText("Sound App Login", juce::dontSendNotification);
     titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centred);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(titleLabel);
 
     //Username Label
     usernameLabel.setText("Username:", juce::dontSendNotification);
     usernameLabel.setJustificationType(juce::Justification::right);
-    usernameLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    usernameLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(usernameLabel);
 
     //Username Input
-    usernameInput.setTextToShowWhenEmpty("Enter username", juce::Colours::grey);
+    usernameInput.setTextToShowWhenEmpty("Enter username", juce::Colour(UIController::placeholder));
     usernameInput.setFont(juce::Font(14.0f));
     addAndMakeVisible(usernameInput);
 
     //Password Label
     passwordLabel.setText("Password:", juce::dontSendNotification);
     passwordLabel.setJustificationType(juce::Justification::right);
-    passwordLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    passwordLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(passwordLabel);
 
     //Password Input
     passwordInput.setPasswordCharacter('*');
-    passwordInput.setTextToShowWhenEmpty("Enter password", juce::Colours::grey);
+    passwordInput.setTextToShowWhenEmpty("Enter password", juce::Colour(UIController::placeholder));
     passwordInput.setFont(juce::Font(14.0f));
     addAndMakeVisible(passwordInput);
 
     //Login Button
     loginButton.setButtonText("Login");
-    loginButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff3498db));
+    loginButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::info));
     loginButton.onClick = [this] { handleLogin(); };
     addAndMakeVisible(loginButton);
 
     //Create Account Button
     createAccountButton.setButtonText("Create New Account");
-    createAccountButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2ecc71));
+    createAccountButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::success));
     createAccountButton.onClick = [this] { handleCreateAccount(); };
     addAndMakeVisible(createAccountButton);
 
@@ -135,7 +135,7 @@ void LoginComponent::handleLogin()
     if (username.isEmpty() || password.isEmpty())
     {
         //Tell monkey brain what to do, and throw some red at it to make it scary
-        setMessage("Please enter username and password", juce::Colours::red);
+        setMessage("Please enter username and password", juce::Colour(UIController::errorText));
         return;
     }
 	//Call the handle for the login, which will be implemented in the parent component,

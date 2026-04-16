@@ -20,7 +20,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
     titleLabel.setText("Owner Dashboard", juce::dontSendNotification);
     titleLabel.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 22.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centredLeft);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(titleLabel);
 
     // Welcome message
@@ -33,7 +33,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Logout button — power symbol (⏻)
     logoutButton.setButtonText(juce::CharPointer_UTF8("\xe2\x8f\xbb Logout"));
-    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffe74c3c));
+    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::logoutBg));
     logoutButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::danger));
     logoutButton.onClick = [this] {
         if (onLogout)
@@ -54,7 +54,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Set price button — money bag emoji
     setPriceButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x92\xb0 Set Price"));
-    setPriceButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightblue);
+    setPriceButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::setPriceBg));
     setPriceButton.setVisible(false);
     // Note: addChildComponent used below instead of addAndMakeVisible so it stays hidden until a sound is selected.
     setPriceButton.onClick = [this]
@@ -80,7 +80,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Load Sounds button — inbox tray emoji (📥)
     loadButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\xa5 Load Sounds"));
-    loadButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    loadButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::warning));
     loadButton.onClick = [this]{
         DBG(">>> LOAD BUTTON CLICKED <<<");
         auto chooser = std::make_shared<juce::FileChooser>(
@@ -119,7 +119,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Cluster button — bar chart emoji
     clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\x8a View 2D Cluster"));
-    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::warning));
     clustButton.onClick = [this] {
         DBG(">>> CLUSTER BUTTON CLICKED <<<");
         if (viewCluster)
@@ -129,7 +129,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Recorder button
     recorderButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x8e\x99 Record Sound"));
-    recorderButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffff5c5c));
+    recorderButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::recorderBg));
     recorderButton.onClick = [this] {
         DBG(">>> RECORDER BUTTON CLICKED <<<");
         if (viewRecorder)
@@ -139,7 +139,7 @@ OwnerDashboardComponent::OwnerDashboardComponent()
 
     // Create Guest Account button — people emoji
     createGuestButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x91\xa5 Create Guest Account"));
-    createGuestButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2ecc71));
+    createGuestButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::success));
     createGuestButton.onClick = [this] {
         DBG(">>> CREATE GUEST ACCOUNT CLICKED <<<");
         if (createGuestAccount)

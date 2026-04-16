@@ -8,6 +8,7 @@
   ==============================================================================
 */
 #include "Sound.h"
+#include "UIController.h"
 
 /*
 * Constructor — takes a file path and immediately loads the audio data into memory.
@@ -93,9 +94,9 @@ void Sound::generateWaveForm(int width, int height){
     juce::Graphics g(waveForm);
 
     //draw a background for waveform area
-    g.fillAll(juce::Colour(0xff1e1e1e));
+    g.fillAll(juce::Colour(UIController::waveformBg));
     //set a color for the waveform (green tealish color)
-    g.setColour(juce::Colour(0xff00cc88));
+    g.setColour(juce::Colour(UIController::waveformFg));
 
     //Geta pointer to the raw sample data, for stereo files we just grabb the left channel
     auto* data = audioBuffer.getReadPointer(0);

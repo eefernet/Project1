@@ -18,7 +18,7 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
     titleLabel.setText("Guest Dashboard", juce::dontSendNotification);
     titleLabel.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 22.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centredLeft);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(titleLabel);
 
     // Welcome message
@@ -30,7 +30,7 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
 
     // Logout button — power symbol (⏻)
     logoutButton.setButtonText(juce::CharPointer_UTF8("\xe2\x8f\xbb Logout"));
-    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffe74c3c));
+    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::logoutBg));
     logoutButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::danger));
     logoutButton.onClick = [this] {
         if (onLogout)
@@ -39,7 +39,7 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
     addAndMakeVisible(logoutButton);
 
     clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\x8a View 2D Cluster"));
-    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::warning));
     clustButton.onClick = [this] {
         DBG(">>> CLUSTER BUTTON CLICKED <<<");
  

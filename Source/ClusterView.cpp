@@ -12,10 +12,11 @@
 //TODO inside the cluster make a menu in top to change the modes and display grouos numbers and what color is that group so give labels
 //TODO apply filters for admin and guest can not?
 #include "ClusterView.h"
+#include "UIController.h"
 ClusterView::ClusterView(ClusterEngine& e, SoundLibrary& library) : engine(e), soundLibrary(library) {}
 void ClusterView::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::black);
+    g.fillAll(juce::Colour(UIController::bg));
 
     const auto& positions = engine.getPositions();
     const auto& clusterIds = engine.getClusterIds();
@@ -23,7 +24,7 @@ void ClusterView::paint(juce::Graphics& g)
     float width = static_cast<float>(getWidth());
     float height = static_cast<float>(getHeight());
 
-    g.setColour(juce::Colours::white);
+    g.setColour(juce::Colour(UIController::titleText));
 
     for (int i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -50,11 +51,11 @@ void ClusterView::paint(juce::Graphics& g)
         int legendX = getWidth() - legendWidth - 15;
         int legendY = 12;
 
-        g.setColour(juce::Colours::darkgrey.withAlpha(0.8f));
+        g.setColour(juce::Colour(UIController::legendBg).withAlpha(0.8f));
         g.fillRoundedRectangle((float)legendX, (float)legendY,
             (float)legendWidth, (float)legendHeight, 8.0f);
 
-        g.setColour(juce::Colours::white);
+        g.setColour(juce::Colour(UIController::titleText));
         g.drawRoundedRectangle((float)legendX, (float)legendY,
             (float)legendWidth, (float)legendHeight, 8.0f, 1.0f);
 
@@ -70,7 +71,7 @@ void ClusterView::paint(juce::Graphics& g)
             g.setColour(getClusterColour(c));
             g.fillRect(startX, y, boxSize, boxSize);
 
-            g.setColour(juce::Colours::white);
+            g.setColour(juce::Colour(UIController::titleText));
             g.drawText(getClusterLabel(c, clusterCount),
                 startX + 20, y - 2, 95, 16,
                 juce::Justification::left);
@@ -102,10 +103,10 @@ void ClusterView::paint(juce::Graphics& g)
             boxX = juce::jlimit(0, getWidth() - boxWidth, boxX);
             boxY = juce::jmax(0, boxY);
 
-            g.setColour(juce::Colours::lightgrey);
+            g.setColour(juce::Colour(UIController::tooltipBg));
             g.fillRoundedRectangle((float)boxX, (float)boxY, (float)boxWidth, (float)boxHeight, 6.0f);
 
-            g.setColour(juce::Colours::black);
+            g.setColour(juce::Colour(UIController::tooltipOutline));
             g.drawRoundedRectangle((float)boxX, (float)boxY, (float)boxWidth, (float)boxHeight, 6.0f, 1.0f);
 
             g.drawText(songName, boxX, boxY, boxWidth, boxHeight, juce::Justification::centred);
@@ -174,7 +175,7 @@ juce::Colour ClusterView::getClusterColour(int clusterId) const
     };
 
     if (clusterId < 0)
-        return juce::Colours::white;
+        return juce::Colour(UIController::titleText);
 
     return colours[clusterId % colours.size()];
 }

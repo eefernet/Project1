@@ -16,15 +16,15 @@
 // ============================================================================
 SoundRowComponent::SoundRowComponent(SoundListComponent& o) : owner(o)
 {
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff3498db));
-    playButton.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
+    playButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::info));
+    playButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::titleText));
     playButton.onClick = [this] { owner.togglePlayback(row); };
     addAndMakeVisible(playButton);
 
     // Buy button — only visible in guest mode
     buyButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x92\xb2 Buy"));
-    buyButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2ecc71));
-    buyButton.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
+    buyButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::success));
+    buyButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::titleText));
     buyButton.onClick = [this] {
         if (owner.onBuySound)
             owner.onBuySound(owner.getLibrary().getSound(row));
@@ -35,8 +35,8 @@ SoundRowComponent::SoundRowComponent(SoundListComponent& o) : owner(o)
 
     // Edit button — only visible in owner mode
     editButton.setButtonText(juce::CharPointer_UTF8("\xe2\x9c\x8f Edit"));
-    editButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff9b59b6));
-    editButton.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
+    editButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::editBg));
+    editButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::titleText));
     editButton.onClick = [this] {
         if (owner.onEditSound)
             owner.onEditSound(owner.getLibrary().getSound(row));

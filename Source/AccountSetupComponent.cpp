@@ -18,36 +18,36 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstU
     titleLabel.setText("Create New Account", juce::dontSendNotification);
     titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centred);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(titleLabel);
 
     //Username
     usernameLabel.setText("Username:", juce::dontSendNotification);
     usernameLabel.setJustificationType(juce::Justification::right);
-    usernameLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    usernameLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(usernameLabel);
 
-    usernameInput.setTextToShowWhenEmpty("Enter username", juce::Colours::grey);
+    usernameInput.setTextToShowWhenEmpty("Enter username", juce::Colour(UIController::placeholder));
     addAndMakeVisible(usernameInput);
 
     //Password
     passwordLabel.setText("Password:", juce::dontSendNotification);
     passwordLabel.setJustificationType(juce::Justification::right);
-    passwordLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    passwordLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(passwordLabel);
 
     passwordInput.setPasswordCharacter('*');
-    passwordInput.setTextToShowWhenEmpty("Enter password", juce::Colours::grey);
+    passwordInput.setTextToShowWhenEmpty("Enter password", juce::Colour(UIController::placeholder));
     addAndMakeVisible(passwordInput);
 
     //Confirm Password
     confirmPasswordLabel.setText("Confirm Password:", juce::dontSendNotification);
     confirmPasswordLabel.setJustificationType(juce::Justification::right);
-    confirmPasswordLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    confirmPasswordLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(confirmPasswordLabel);
 
     confirmPasswordInput.setPasswordCharacter('*');
-    confirmPasswordInput.setTextToShowWhenEmpty("Re-enter password", juce::Colours::grey);
+    confirmPasswordInput.setTextToShowWhenEmpty("Re-enter password", juce::Colour(UIController::placeholder));
     addAndMakeVisible(confirmPasswordInput);
 
     //Role Selector
@@ -81,7 +81,7 @@ AccountSetupComponent::AccountSetupComponent(bool firstUser): isFirstUser(firstU
     if (isFirstUser)
     {
         messageLabel.setText("First user must be an Owner", juce::dontSendNotification);
-        messageLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::warnText));
     }
     //Size matters folks
     setSize(450, 450);
@@ -164,21 +164,21 @@ void AccountSetupComponent::onCreateAccount()
     if (username.isEmpty())
     {
         messageLabel.setText("Username cannot be empty", juce::dontSendNotification);
-        messageLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::errorText));
         return;
     }
     //Password cannot be empty
     if (password.isEmpty())
     {
         messageLabel.setText("Password cannot be empty", juce::dontSendNotification);
-        messageLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::errorText));
         return;
     }
     //Passwords must match in each field
     if (password != confirmPassword)
     {
         messageLabel.setText("Passwords do not match", juce::dontSendNotification);
-        messageLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::errorText));
         return;
     }
 
@@ -200,7 +200,7 @@ void AccountSetupComponent::onCreateAccount()
 	//Show success message to make the user feel good about themselves, that for once they did something right in life
     //Not sure why this is not displaying
     messageLabel.setText("Account created successfully!", juce::dontSendNotification);
-    messageLabel.setColour(juce::Label::textColourId, juce::Colours::green);
+    messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::successText));
 
     // Sleep for a second to let the user see the success message
 	//_sleep(1000); 
@@ -243,7 +243,7 @@ void AccountSetupComponent::setGuestOnly(bool guestOnlyMode)
     {
         titleLabel.setText("Create Guest Account", juce::dontSendNotification);
         messageLabel.setText("Creating a guest account", juce::dontSendNotification);
-        messageLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+        messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::warnText));
         roleSelector.setSelectedId(2);  // Guest
     }
     else
@@ -252,7 +252,7 @@ void AccountSetupComponent::setGuestOnly(bool guestOnlyMode)
         if (isFirstUser)
         {
             messageLabel.setText("First user must be an Owner", juce::dontSendNotification);
-            messageLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+            messageLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::warnText));
             roleSelector.setSelectedId(1);  // Owner
         }
         else

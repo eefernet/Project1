@@ -10,10 +10,23 @@
  * Applied globally via juce::LookAndFeel::setDefaultLookAndFeel in MainComponent.
  * This was ripped straight from StackOverflow so thanks random internet dude
  */
+/*
+ *
+ *Usage:
+ *  make sure to put #include "UIController.h" to get access to these constants
+ *  - UIController::success: green color for success buttons and indicators
+ *  - UIController::editBg: purple color for edit buttons and indicators
+ *  - UIController::titleText: white color for text that is meant to be read
+ *  - UIController::placeholder: gray color for placeholder text
+ */
 class UIController : public juce::LookAndFeel_V4
 {
 public:
-    // Palette
+    /* Palette, updated now so if we want to make a change color wise, everything in this app should reference
+     * these constexpr. Each hex is a 32-bit RGBA value, with alpha channel first. If you want to change colors of
+     * something and see what that color is just search "hex color selector RGBA" on google its the first thing that pops up
+     * keep in mind to add the 0x in front of the hex value it gives you like below
+     */
     static constexpr juce::uint32 bg          = 0xff0a0f0a; // near-black with green tint
     static constexpr juce::uint32 bgRaised    = 0xff101810;
     static constexpr juce::uint32 bgHover     = 0xff162016;
@@ -24,6 +37,24 @@ public:
     static constexpr juce::uint32 accent      = 0xff39ff14;
     static constexpr juce::uint32 accentAmber = 0xffffb000;
     static constexpr juce::uint32 danger      = 0xffff5555;
+    static constexpr juce::uint32 titleText    = 0xffffffff;
+    static constexpr juce::uint32 placeholder  = 0xff808080;
+    static constexpr juce::uint32 successText  = 0xff008000;
+    static constexpr juce::uint32 errorText    = 0xffff0000;
+    static constexpr juce::uint32 warnText     = 0xffffa500;
+    static constexpr juce::uint32 info         = 0xff3498db;
+    static constexpr juce::uint32 success      = 0xff2ecc71;
+    static constexpr juce::uint32 warning      = 0xffffa500;
+    static constexpr juce::uint32 logoutBg     = 0xffe74c3c;
+    static constexpr juce::uint32 recorderBg   = 0xffff5c5c;
+    static constexpr juce::uint32 editBg       = 0xff9b59b6;
+    static constexpr juce::uint32 setPriceBg   = 0xffadd8e6;
+    static constexpr juce::uint32 waveformBg   = 0xff1e1e1e;
+    static constexpr juce::uint32 waveformFg   = 0xff00cc88;
+    static constexpr juce::uint32 clusterPageBg = 0xff1a1a1a;
+    static constexpr juce::uint32 tooltipBg    = 0xffd3d3d3;
+    static constexpr juce::uint32 tooltipOutline = 0xff000000;
+    static constexpr juce::uint32 legendBg     = 0xff696969;
 
     UIController()
     {
