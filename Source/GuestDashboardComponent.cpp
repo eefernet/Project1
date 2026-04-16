@@ -10,35 +10,36 @@
 
 
 #include "GuestDashboardComponent.h"
+#include "UIController.h"
 
 GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(lib, true)
 {
     // Title
     titleLabel.setText("Guest Dashboard", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(28.0f, juce::Font::bold));
-    titleLabel.setJustificationType(juce::Justification::centred);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    titleLabel.setFont(juce::Font(juce::Font::getDefaultMonospacedFontName(), 22.0f, juce::Font::bold));
+    titleLabel.setJustificationType(juce::Justification::centredLeft);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::titleText));
     addAndMakeVisible(titleLabel);
 
     // Welcome message
     welcomeLabel.setText("Logged in as Guest", juce::dontSendNotification);
-    welcomeLabel.setFont(juce::Font(18.0f));
+    welcomeLabel.setFont(juce::Font(13.0f));
     welcomeLabel.setJustificationType(juce::Justification::centred);
-    welcomeLabel.setColour(juce::Label::textColourId, juce::Colours::lightyellow);
+    welcomeLabel.setColour(juce::Label::textColourId, juce::Colour(UIController::accent));
     addAndMakeVisible(welcomeLabel);
 
-    // Logout button
-    logoutButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x9a\xaa Logout"));
-    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffe74c3c));
+    // Logout button — power symbol (⏻)
+    logoutButton.setButtonText(juce::CharPointer_UTF8("\xe2\x8f\xbb Logout"));
+    logoutButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::logoutBg));
+    logoutButton.setColour(juce::TextButton::textColourOffId, juce::Colour(UIController::danger));
     logoutButton.onClick = [this] {
         if (onLogout)
             onLogout();
         };
     addAndMakeVisible(logoutButton);
 
-    clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x94\xac View 2D Cluster"));
-    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
-    clustButton.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+    clustButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\x8a View 2D Cluster"));
+    clustButton.setColour(juce::TextButton::buttonColourId, juce::Colour(UIController::warning));
     clustButton.onClick = [this] {
         DBG(">>> CLUSTER BUTTON CLICKED <<<");
  
@@ -68,31 +69,38 @@ void GuestDashboardComponent::visibilityChanged()
 
 void GuestDashboardComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colour(0xff2c3e50));
-
-    g.setColour(juce::Colours::white.withAlpha(0.2f));
-    g.drawRect(getLocalBounds().reduced(20), 2);
+    g.fillAll(juce::Colour(UIController::bg));
 }
 
 void GuestDashboardComponent::resized()
 {
-    auto area = getLocalBounds().reduced(20);
+    auto area = getLocalBounds().reduced(10);
 
-    titleLabel.setBounds(area.removeFromTop(40));
+    const int btnH    = 42;
+    const int logoutW = 150;
+    const int guestW  = 200;
+    const int itemGap = 10;
+
+    // Title row at the top
+    auto titleRow = area.removeFromTop(34);
+    titleLabel.setBounds(titleRow.reduced(4, 0));
     area.removeFromTop(8);
 
-    welcomeLabel.setBounds(area.removeFromTop(28));
-    area.removeFromTop(8);
+    // Bottom row: [Guest: xxx] [Logout], centered
+    auto bottomBar = area.removeFromBottom(btnH);
+    const int bottomTotal = guestW + itemGap + logoutW;
+    const int bottomX     = bottomBar.getX() + (bottomBar.getWidth() - bottomTotal) / 2;
+    const int bottomY     = bottomBar.getY();
+    welcomeLabel.setBounds(bottomX,                          bottomY, guestW,  btnH);
+    logoutButton.setBounds(bottomX + guestW + itemGap,       bottomY, logoutW, btnH);
 
-    auto buttonRow = area.removeFromTop(34);
-    int gap = 10;
-    int totalWidth = 170 + gap + 100;
-    int startX = buttonRow.getX() + (buttonRow.getWidth() - totalWidth) / 2;
-    int y = buttonRow.getY();
-    int h = buttonRow.getHeight();
-    clustButton.setBounds(startX, y, 170, h);
-    logoutButton.setBounds(startX + 170 + gap, y, 100, h);
-    area.removeFromTop(10);
+    area.removeFromBottom(10);
 
+    // Left column: action buttons; right: sound list
+    const int mainBtnW = 210;
+    auto leftCol = area.removeFromLeft(mainBtnW);
+    clustButton.setBounds(leftCol.removeFromTop(btnH));
+
+    area.removeFromLeft(12);
     soundList.setBounds(area);
 }

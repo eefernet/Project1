@@ -9,6 +9,7 @@
 */
 //temp cluster page please change if there are better ways.
 #include "ClusterPageComponent.h"
+#include "UIController.h"
 
 ClusterPageComponent::ClusterPageComponent(ClusterEngine& en, SoundLibrary& library)
 : eng(en), clusterView(en, library)
@@ -46,7 +47,7 @@ ClusterPageComponent::ClusterPageComponent(ClusterEngine& en, SoundLibrary& libr
 
 void ClusterPageComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colour(0xff1a1a1a)); //change colors to any IDK
+    g.fillAll(juce::Colour(UIController::clusterPageBg));
 }
 
 void ClusterPageComponent::resized()

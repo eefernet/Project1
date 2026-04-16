@@ -16,6 +16,8 @@ MainComponent::MainComponent()
     clusterEngine(ownerDashboard.getSoundLibrary()),
     clusterPage(clusterEngine, ownerDashboard.getSoundLibrary())
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(&uiController);
+
     // Setup LoginComponent callbacks
     loginScreen.onLogin = [this](juce::String username, juce::String password) {
         handleLogin(username, password);
@@ -38,12 +40,12 @@ MainComponent::MainComponent()
     ownerDashboard.onLogout = [this]() {
         currentUser = nullptr;
         showView(ViewState::Login);
-        loginScreen.setMessage("Logged out successfully", juce::Colours::green);
+        loginScreen.setMessage("Logged out successfully", juce::Colour(UIController::successText));
         };
     guestDashboard.onLogout = [this]() {
         currentUser = nullptr;
         showView(ViewState::Login);
-        loginScreen.setMessage("Logged out successfully", juce::Colours::green);
+        loginScreen.setMessage("Logged out successfully", juce::Colour(UIController::successText));
         };
 
     clusterPage.back = [this]()
@@ -107,12 +109,13 @@ MainComponent::MainComponent()
 //destructor
 MainComponent::~MainComponent()
 {
+    juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
 }
 
 //Painting method
 void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colour(0xff1a1a1a));
+    g.fillAll(juce::Colour(UIController::bg));
 }
 
 //setting bounds for the child components
@@ -138,7 +141,7 @@ void MainComponent::handleLogin(juce::String username, juce::String password)
     //If we get a nullptr that means the user is not found
     if (user == nullptr)
     {
-        loginScreen.setMessage("User not found", juce::Colours::red);
+        loginScreen.setMessage("User not found", juce::Colour(UIController::errorText));
         DBG("User not found: " << username);
         return;
     }
@@ -149,7 +152,7 @@ void MainComponent::handleLogin(juce::String username, juce::String password)
 		//Login successful — point currentUser at the entry in allUsers (non-owning)
         currentUser = user;
 		//Show success message
-        loginScreen.setMessage("Login successful!", juce::Colours::green);
+        loginScreen.setMessage("Login successful!", juce::Colour(UIController::successText));
         DBG("Login successful: " << username << " as " << (user->getUserRole() == UserRole::Owner ? "Owner" : "Guest"));
 
         // Show welcome message
@@ -164,7 +167,7 @@ void MainComponent::handleLogin(juce::String username, juce::String password)
 	//failure to login, show error message and log output
     else
     {
-        loginScreen.setMessage("Incorrect password", juce::Colours::red);
+        loginScreen.setMessage("Incorrect password", juce::Colour(UIController::errorText));
         DBG("Incorrect password for: " << username);
     }
 }
@@ -232,7 +235,7 @@ void MainComponent::handleAccountCreated(juce::String username, juce::String pas
     else
     {
         showView(ViewState::Login);
-        loginScreen.setMessage("Account created! Please login", juce::Colours::green);
+        loginScreen.setMessage("Account created! Please login", juce::Colour(UIController::successText));
     }
 }
 //This is how we handle when the user cancels account creation, return to wherever they came from

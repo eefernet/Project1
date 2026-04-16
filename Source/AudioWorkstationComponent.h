@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "AudioLiveScrollingDisplay.h"
 #include "DemoUtilities.h"
+#include "UIController.h"
 
 //==============================================================================
 /** Audio recorder that writes incoming audio data to a WAV file. */
@@ -130,21 +131,24 @@ public:
         repaint();
     }
 
+    //There are some changes here but they should be all just visual. Starting to match the overall theme.
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(juce::Colours::darkgrey);
-        g.setColour(juce::Colours::lightgrey);
+        g.fillAll(juce::Colour(UIController::bgRaised));
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(getLocalBounds(), 1);
 
         if (thumbnail.getTotalLength() > 0.0)
         {
             auto endTime = displayFullThumb ? thumbnail.getTotalLength()
                 : juce::jmax(30.0, thumbnail.getTotalLength());
 
-            auto thumbArea = getLocalBounds();
-            thumbnail.drawChannels(g, thumbArea.reduced(2), 0.0, endTime, 1.0f);
+            g.setColour(juce::Colour(UIController::accent));
+            thumbnail.drawChannels(g, getLocalBounds().reduced(2), 0.0, endTime, 1.0f);
         }
         else
         {
+            g.setColour(juce::Colour(UIController::textDim));
             g.setFont(14.0f);
             g.drawFittedText("(No file recorded)", getLocalBounds(), juce::Justification::centred, 2);
         }
@@ -215,22 +219,23 @@ private:
 
     void paintIfNoFileLoaded(juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds)
     {
-        g.setColour(juce::Colours::darkgrey);
+        g.setColour(juce::Colour(UIController::bgRaised));
         g.fillRect(thumbnailBounds);
-        g.setColour(juce::Colours::white);
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(thumbnailBounds, 1);
+        g.setColour(juce::Colour(UIController::textDim));
         g.drawFittedText("No File Loaded", thumbnailBounds, juce::Justification::centred, 1);
     }
 
     void paintIfFileLoaded(juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds)
     {
-        g.setColour(juce::Colours::midnightblue);
+        g.setColour(juce::Colour(UIController::bgRaised));
         g.fillRect(thumbnailBounds);
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(thumbnailBounds, 1);
 
-        juce::ColourGradient gradient(juce::Colours::red, 0.0f, (float)getHeight(),
-            juce::Colours::yellow, (float)getWidth(), (float)getHeight(), false);
-        g.setGradientFill(gradient);
-
-        thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
+        g.setColour(juce::Colour(UIController::accent));
+        thumbnail.drawChannels(g, thumbnailBounds.reduced(2), 0.0, thumbnail.getTotalLength(), 1.0f);
 
         // Draw playback position needle
         if (thumbnail.getTotalLength() > 0.0)
@@ -238,7 +243,7 @@ private:
             auto proportionPlayed = playbackPosition / thumbnail.getTotalLength();
             auto needleX = thumbnailBounds.getX() + (int)(thumbnailBounds.getWidth() * proportionPlayed);
 
-            g.setColour(juce::Colours::white);
+            g.setColour(juce::Colour(UIController::accentAmber));
             g.drawLine((float)needleX, (float)thumbnailBounds.getY(),
                        (float)needleX, (float)thumbnailBounds.getBottom(), 2.0f);
         }
@@ -279,7 +284,7 @@ public:
 
         // Back button
         addAndMakeVisible(backButton);
-        backButton.setButtonText("Back");
+        backButton.setButtonText(juce::CharPointer_UTF8("\xe2\x86\x90 Back")); // ← Back
         backButton.onClick = [this] {
             // Stop any active recording/playback before navigating away
             if (recorder.isRecording())
@@ -300,9 +305,7 @@ public:
         addAndMakeVisible(recordingThumbnail);
 
         addAndMakeVisible(recordButton);
-        recordButton.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffff5c5c));
-        recordButton.setColour(juce::TextButton::textColourOnId, juce::Colours::black);
-        recordButton.setButtonText("Record");
+        recordButton.setButtonText(juce::CharPointer_UTF8("\xe2\x97\x8f Record")); // ● Record
         recordButton.onClick = [this] { recordButtonClicked(); };
 
         // Playback UI
@@ -311,18 +314,16 @@ public:
         playbackLabel.setFont(juce::FontOptions(18.0f, juce::Font::bold));
 
         addAndMakeVisible(openButton);
-        openButton.setButtonText("Open...");
+        openButton.setButtonText(juce::CharPointer_UTF8("\xf0\x9f\x93\xa5 Open...")); // 📥 Open
         openButton.onClick = [this] { openButtonClicked(); };
 
         addAndMakeVisible(playButton);
-        playButton.setButtonText("Play");
-        playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+        playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xb6 Play")); // ▶ Play
         playButton.setEnabled(false);
         playButton.onClick = [this] { playButtonClicked(); };
 
         addAndMakeVisible(stopButton);
-        stopButton.setButtonText("Stop");
-        stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+        stopButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xa0 Stop")); // ■ Stop
         stopButton.setEnabled(false);
         stopButton.onClick = [this] { stopButtonClicked(); };
 
@@ -338,7 +339,7 @@ public:
 
         // Settings button (audio device selector)
         addAndMakeVisible(settingsButton);
-        settingsButton.setButtonText("Settings");
+        settingsButton.setButtonText(juce::CharPointer_UTF8("\xe2\x9a\x99 Settings")); // ⚙ Settings
         settingsButton.onClick = [this] { settingsButtonClicked(); };
 
         // Setup audio
@@ -378,7 +379,7 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(getUIColourIfAvailable(juce::LookAndFeel_V4::ColourScheme::UIColour::windowBackground));
+        g.fillAll(juce::Colour(UIController::bg));
     }
 
     void resized() override
@@ -475,7 +476,7 @@ private:
         lastRecording = parentDir.getNonexistentChildFile("Recording", ".wav");
 
         recorder.startRecording(lastRecording);
-        recordButton.setButtonText("Stop");
+        recordButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xa0 Stop")); // ■ Stop
         recordingThumbnail.setDisplayFullThumbnail(false);
     }
 
@@ -507,7 +508,7 @@ private:
                         DBG("Failed to copy recording to " << destFile.getFullPathName());
                 }
 
-                recordButton.setButtonText("Record");
+                recordButton.setButtonText(juce::CharPointer_UTF8("\xe2\x97\x8f Record")); // ● Record
                 recordingThumbnail.setDisplayFullThumbnail(true);
             });
     }
@@ -583,8 +584,8 @@ private:
             switch (playbackState)
             {
             case Stopped:
-                playButton.setButtonText("Play");
-                stopButton.setButtonText("Stop");
+                playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xb6 Play"));
+                stopButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xa0 Stop"));
                 stopButton.setEnabled(false);
                 transportSource.setPosition(0.0);
                 break;
@@ -594,8 +595,8 @@ private:
                 break;
 
             case Playing:
-                playButton.setButtonText("Pause");
-                stopButton.setButtonText("Stop");
+                playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x8f\xb8 Pause")); // ⏸
+                stopButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xa0 Stop"));
                 stopButton.setEnabled(true);
                 break;
 
@@ -604,8 +605,8 @@ private:
                 break;
 
             case Paused:
-                playButton.setButtonText("Resume");
-                stopButton.setButtonText("Restart");
+                playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xb6 Resume"));
+                stopButton.setButtonText(juce::CharPointer_UTF8("\xe2\x86\xba Restart")); // ↺
                 break;
 
             case Stopping:

@@ -12,6 +12,7 @@
 #include "ClusterEngine.h"
 #include "Soundlibrary.h"
 #include "AudioWorkstationComponent.h"
+#include "UIController.h"
 
 /*
 * This is the main parent compontent that will manage the different scereens and switching between them.
@@ -28,6 +29,9 @@ public:
     void resized() override;
 
 private:
+    //Global UI theme — installed as default LookAndFeel in ctor, cleared in dtor
+    UIController uiController;
+
     //UI Components
     LoginComponent loginScreen;
     AccountSetupComponent accountSetup;
