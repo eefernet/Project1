@@ -94,6 +94,8 @@ class Sound {
     * Calculated from the number of samples divided by the sample rate.
     */
   juce::String getDurationString() const;
+  bool isPurchased() const;
+  void setPurchased(bool hasPurchased);
 
 private:
   /*
@@ -132,4 +134,5 @@ private:
   juce::Image waveForm;
   std::map<std::string, std::string> metaData;
   bool valid = false;
+  bool purchased = false;
 };
