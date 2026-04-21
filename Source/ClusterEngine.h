@@ -23,7 +23,7 @@ class ClusterEngine
 public:
     ClusterEngine(SoundLibrary& library);
     void clusterByLength();
-	void clusterBySimilarity();
+    void clusterBySimilarity();
     const std::vector<juce::Point<float>>& getPositions() const;
     const std::vector<int>& getClusterIds() const;
     bool isLengthMode() const;

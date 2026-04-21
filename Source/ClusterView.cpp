@@ -7,10 +7,6 @@
 
   ==============================================================================
 */
-//TODO give colors to the groups 
-//TODO Add animation when switching cluster modes(maybe?)
-//TODO inside the cluster make a menu in top to change the modes and display grouos numbers and what color is that group so give labels
-//TODO apply filters for admin and guest can not?
 #include "ClusterView.h"
 #include "UIController.h"
 ClusterView::ClusterView(ClusterEngine& e, SoundLibrary& library) : engine(e), soundLibrary(library) {}
@@ -178,6 +174,14 @@ juce::Colour ClusterView::getClusterColour(int clusterId) const
         return juce::Colour(UIController::titleText);
 
     return colours[clusterId % colours.size()];
+}
+void ClusterView::mouseDown(const juce::MouseEvent& event)
+{
+    int clickedDot = getDotAtPosition(event.position);
+    if (clickedDot >= 0 && onDotClicked)
+    {
+        onDotClicked(clickedDot);
+    }
 }
 
 juce::String ClusterView::getClusterLabel(int clusterId, int clusterCount) const
