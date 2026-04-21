@@ -29,6 +29,8 @@
         <FILE id="oVQDAR" name="ClusterEngine.h" compile="0" resource="0" file="Source/ClusterEngine.h"/>
         <FILE id="rYk3bP" name="User.cpp" compile="1" resource="0" file="Source/User.cpp"/>
         <FILE id="IeCAP6" name="User.h" compile="0" resource="0" file="Source/User.h"/>
+        <FILE id="tRKAgk" name="SoundPopup.cpp" compile="1" resource="0" file="Source/SoundPopup.cpp"/>
+        <FILE id="oBkcH2" name="SoundPopup.h" compile="0" resource="0" file="Source/SoundPopup.h"/>
       </GROUP>
       <GROUP id="{EB3A7F58-8BCB-E49C-4545-F558B8E4AFE4}" name="Views">
         <FILE id="FEAwA1" name="AccountSetupComponent.cpp" compile="1" resource="0"

@@ -16,13 +16,16 @@
 
 class ClusterView : public juce::Component
 {
-    public:
-        ClusterView(ClusterEngine& engine, SoundLibrary& library);
-        void paint(juce::Graphics& g) override;
-        void resized() override;
-        void mouseMove(const juce::MouseEvent& event) override;
-        void mouseExit(const juce::MouseEvent& event) override;
-private: 
+public:
+    ClusterView(ClusterEngine& engine, SoundLibrary& library);
+    void paint(juce::Graphics& g) override;
+    void resized() override;
+    void mouseMove(const juce::MouseEvent& event) override;
+    void mouseExit(const juce::MouseEvent& event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
+    std::function<void(int)> onDotClicked;
+
+private:
     int getDotAtPosition(juce::Point<float> mousePos) const;
     ClusterEngine& engine;
     juce::Colour getClusterColour(int clusterId) const;
