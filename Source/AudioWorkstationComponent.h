@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "AudioLiveScrollingDisplay.h"
 #include "DemoUtilities.h"
+#include "UIController.h"
 
 
 
@@ -131,17 +132,21 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(juce::Colours::darkgrey);
-        g.setColour(juce::Colours::lightgrey);
+        g.fillAll(juce::Colour(UIController::bgRaised));
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(getLocalBounds(), 1);
 
         if (thumbnail.getTotalLength() > 0.0)
         {
             auto endTime = displayFullThumb ? thumbnail.getTotalLength()
                 : juce::jmax(30.0, thumbnail.getTotalLength());
+
+            g.setColour(juce::Colour(UIController::accent));
             thumbnail.drawChannels(g, getLocalBounds().reduced(2), 0.0, endTime, 1.0f);
         }
         else
         {
+            g.setColour(juce::Colour(UIController::textDim));
             g.setFont(14.0f);
             g.drawFittedText("(No file recorded)", getLocalBounds(), juce::Justification::centred, 2);
         }
@@ -212,22 +217,23 @@ private:
 
     void paintIfNoFileLoaded(juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds)
     {
-        g.setColour(juce::Colours::darkgrey);
+        g.setColour(juce::Colour(UIController::bgRaised));
         g.fillRect(thumbnailBounds);
-        g.setColour(juce::Colours::white);
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(thumbnailBounds, 1);
+        g.setColour(juce::Colour(UIController::textDim));
         g.drawFittedText("No File Loaded", thumbnailBounds, juce::Justification::centred, 1);
     }
 
     void paintIfFileLoaded(juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds)
     {
-        g.setColour(juce::Colours::midnightblue);
+        g.setColour(juce::Colour(UIController::bgRaised));
         g.fillRect(thumbnailBounds);
+        g.setColour(juce::Colour(UIController::border));
+        g.drawRect(thumbnailBounds, 1);
 
-        juce::ColourGradient gradient(juce::Colours::red, 0.0f, (float)getHeight(),
-            juce::Colours::yellow, (float)getWidth(), (float)getHeight(), false);
-        g.setGradientFill(gradient);
-
-        thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
+        g.setColour(juce::Colour(UIController::accent));
+        thumbnail.drawChannels(g, thumbnailBounds.reduced(2), 0.0, thumbnail.getTotalLength(), 1.0f);
 
         // Draw playback position needle
         if (thumbnail.getTotalLength() > 0.0)
@@ -235,7 +241,7 @@ private:
             auto proportionPlayed = playbackPosition / thumbnail.getTotalLength();
             auto needleX = thumbnailBounds.getX() + (int)(thumbnailBounds.getWidth() * proportionPlayed);
 
-            g.setColour(juce::Colours::white);
+            g.setColour(juce::Colour(UIController::accentAmber));
             g.drawLine((float)needleX, (float)thumbnailBounds.getY(),
                        (float)needleX, (float)thumbnailBounds.getBottom(), 2.0f);
         }
@@ -654,7 +660,7 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(getUIColourIfAvailable(juce::LookAndFeel_V4::ColourScheme::UIColour::windowBackground));
+        g.fillAll(juce::Colour(UIController::bg));
     }
 
     void resized() override
