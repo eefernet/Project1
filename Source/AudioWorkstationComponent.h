@@ -599,6 +599,12 @@ public:
         saveFilteredButton.setEnabled(false);
 		saveFilteredButton.onClick = [this] { saveFilteredAudio(); };
 
+        addAndMakeVisible(resetButton);
+		resetButton.setButtonText("Reset");
+		resetButton.setColour(juce::TextButton::buttonColourId, juce::Colours::orange);
+        resetButton.setEnabled(false);
+		resetButton.onClick = [this] { resetButtonClicked(); };
+
         addAndMakeVisible(playbackThumbnail);
 
         // Volume slider
@@ -692,6 +698,9 @@ public:
         saveFilteredButton.setBounds(playbackButtonArea.removeFromLeft(120));
         playbackButtonArea.removeFromLeft(10);
         settingsButton.setBounds(playbackButtonArea.removeFromLeft(100));
+        playbackButtonArea.removeFromLeft(10);
+        resetButton.setBounds(playbackButtonArea.removeFromLeft(100));
+
 
 		// Volume slider sits just below the playback buttons
 		volumeSlider.setBounds(area.removeFromTop(30).reduced(4));
@@ -714,8 +723,13 @@ public:
 
 	void sliderValueChanged(juce::Slider* slider) override
 	{
-		if (slider == &volumeSlider)
-			transportSource.setGain((float)volumeSlider.getValue());
+		bool toggleReset = true;
+
+        if (slider == &volumeSlider)
+        {
+            transportSource.setGain((float)volumeSlider.getValue());
+            toggleReset = false;  // Don't enable reset button just for volume changes
+        }
 
 		if (slider == &pitchSlider)
             if (pitchShiftSource != nullptr)
@@ -738,6 +752,9 @@ public:
 			reverbParams.damping = static_cast<float>(reverbDampingSlider.getValue());
 			reverb.setParameters(reverbParams);
 		}
+
+        if (toggleReset)
+			resetButton.setEnabled(true);
 	}
 
     void timerCallback() override
@@ -795,7 +812,7 @@ private:
         addAndMakeVisible(pitchSlider);
         pitchSlider.setRange(0.25, 2.0, 0.01);
         pitchSlider.setValue(1.0);
-        pitchSlider.setTextValueSuffix("Pitch");
+        pitchSlider.setTextValueSuffix(" Pitch");
         pitchSlider.setSliderStyle(juce::Slider::LinearHorizontal);
         pitchSlider.addListener(this);
     }
@@ -813,6 +830,10 @@ private:
                 auto file = fc.getResult();
                 // Saves file to a member variable so applied effects can be saved
                 currentFile = file;
+
+                // Update the sounds folder to the directory the user selected from
+                if (file != juce::File{})
+                    soundsFolder = file.getParentDirectory();
 
                 if (file != juce::File{})
                 {
@@ -907,7 +928,11 @@ private:
             {
                 auto destFile = c.getResult();
                 if (destFile != juce::File{})
+                {
+                    // Update the sounds folder to the directory the user selected
+                    soundsFolder = destFile.getParentDirectory();
                     lastRecording.copyFileTo(destFile);
+                }
 
                 recordButton.setButtonText("Record");
                 recordingThumbnail.setDisplayFullThumbnail(true);
@@ -962,6 +987,9 @@ private:
                 auto destFile = fc.getResult();
                 if (destFile == juce::File{})
                     return;
+
+                // Update the sounds folder to the directory the user selected
+                soundsFolder = destFile.getParentDirectory();
 
                 auto* reader = formatManager.createReaderFor(currentFile);
                 if (reader == nullptr)
@@ -1022,6 +1050,17 @@ private:
             });
     }
 
+    void resetButtonClicked()
+    {
+        // Reset all effects to default values
+        pitchSlider.setValue(1.0);
+        reverbWetSlider.setValue(0.0);
+        reverbRoomSizeSlider.setValue(0.0);
+        reverbDampingSlider.setValue(0.0);
+        if (pitchShiftSource != nullptr)
+			pitchShiftSource->setPitchFactor(1.0);
+	}
+
     void changePlaybackState(TransportState newState)
     {
         if (playbackState != newState)
@@ -1080,6 +1119,7 @@ private:
     juce::TextButton stopButton;
     juce::TextButton saveFilteredButton;
     juce::TextButton settingsButton;
+    juce::TextButton resetButton;
     juce::Slider volumeSlider;
     PlaybackThumbnail playbackThumbnail;
 
