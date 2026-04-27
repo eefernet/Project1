@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="jTYPbn" name="Project1" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" microphonePermissionNeeded="1"
+              microphonePermissionsText="This app needs microphone access to record audio.">
   <MAINGROUP id="JwBuOy" name="Project1">
     <GROUP id="{FA9AF917-5FD9-06C2-B757-CA7CCBFCD5DD}" name="Source">
       <GROUP id="{269CEE56-0D69-43C4-0CA3-972C161B095A}" name="Utils">
@@ -124,7 +125,7 @@
         <MODULEPATH id="juce_audio_processors_headless" path="../../Documents/dev/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" microphonePermissionNeeded="1">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>

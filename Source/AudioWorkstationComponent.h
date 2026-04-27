@@ -782,8 +782,14 @@ public:
 private:
     void setupEffects()
     {
-        // Setup reverb
-        reverbParams = { 0.5f, 0.5f, 0.0f, 1.0f };
+        // Setup reverb to wetLevel 0 and dryLevel 1 means no reverb by default, when i opened a recording, it would have
+        // that sound effect built in, so fixed that here
+        reverbParams.roomSize = 0.0f;
+        reverbParams.damping  = 0.0f;
+        reverbParams.wetLevel = 0.0f;
+        reverbParams.dryLevel = 1.0f;
+        reverbParams.width    = 1.0f;
+        reverbParams.freezeMode = 0.0f;
         reverb.setParameters(reverbParams);
 
         // Setup UI for effects
