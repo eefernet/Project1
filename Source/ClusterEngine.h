@@ -30,8 +30,8 @@ public:
 private:
     SoundLibrary& soundLibrary;
     std::vector<juce::Point<float>> positions;
-    std::vector<float> extractWaveformFeature(Sound* s, int target);
-    float waveformDistance(const std::vector<float>& a, const std::vector<float>& b);
+    //std::vector<float> extractWaveformFeature(Sound* s, int target);
+    //float waveformDistance(const std::vector<float>& a, const std::vector<float>& b);
     std::vector<int> clusterIds;
     bool lengthMode = true;
 

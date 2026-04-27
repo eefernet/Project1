@@ -46,6 +46,14 @@ SoundPopup::SoundPopup(Sound* soundShow) : sound(soundShow)
             }
         };
     addAndMakeVisible(progressBar);
+    closeButton.setButtonText("x");
+    closeButton.onClick = [this]()
+        {
+            if (onCloseRequest) {
+                onCloseRequest();
+            }
+        };
+    addAndMakeVisible(closeButton);
 
 }
 void SoundPopup::setPlaying(bool play)
@@ -73,6 +81,8 @@ void SoundPopup::resized()
 {
     auto area = getLocalBounds().reduced(10);
     auto top = area.removeFromTop(headerHeight);
+    closeButton.setBounds(top.removeFromRight(45));
+    top.removeFromRight(6);
     nameLabel.setBounds(top);
     area.removeFromTop(8);
     auto buttonrow = area.removeFromTop(32);

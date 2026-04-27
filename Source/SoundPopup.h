@@ -26,12 +26,14 @@ public:
     void setProgress(double newProgress);
     std::function<void(bool)> onPlayToggled;
     std::function<void(double)> onSeekRequested;
+    std::function<void()> onCloseRequest;
 private:
     Sound* sound = nullptr;
 
     juce::Label nameLabel;
     juce::TextButton playButton;
     juce::Slider progressBar;
+    juce::TextButton closeButton;
 
     juce::Point<int> dragStartMouse;
     juce::Point<int> dragStartComponent;
