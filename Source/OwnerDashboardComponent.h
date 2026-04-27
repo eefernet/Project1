@@ -30,6 +30,7 @@ public:
     std::function<void()> viewCluster;
     std::function<void()> viewRecorder;
     std::function<void()> createGuestAccount;
+    std::function<void(Sound*)> editSound;
 
     SoundLibrary& getSoundLibrary();
     juce::File getSoundsFolder() const { return loadedSoundsFolder; }

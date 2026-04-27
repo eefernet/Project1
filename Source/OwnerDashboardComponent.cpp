@@ -94,6 +94,9 @@ OwnerDashboardComponent::OwnerDashboardComponent()
                     loadedSoundsFolder = dir;
                     soundlibrary.loadFromDirectory(dir);
                     soundList = std::make_unique<SoundListComponent>(soundlibrary);
+                    soundList->onEditSound = [this](Sound* s) {
+                        if (editSound) editSound(s);
+                    };
                     soundList->onSoundSelected = [this](Sound* s)
                         {
                             selectedSound = s;

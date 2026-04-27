@@ -94,6 +94,7 @@ class Sound {
     * Calculated from the number of samples divided by the sample rate.
     */
   juce::String getDurationString() const;
+  juce::File getSourceFile() const { return sourceFile; }
   bool isPurchased() const;
   void setPurchased(bool hasPurchased);
 
@@ -135,4 +136,5 @@ private:
   std::map<std::string, std::string> metaData;
   bool valid = false;
   bool purchased = false;
+  juce::File sourceFile;
 };

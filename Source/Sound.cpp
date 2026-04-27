@@ -20,7 +20,7 @@ Sound::Sound(int id,
     const juce::String& name,
     const juce::File& sourceFile,
     juce::AudioFormatManager& formatManager)
-    : soundId(id), soundPrice("0.00"), name(name) {
+    : soundId(id), soundPrice("0.00"), name(name), sourceFile(sourceFile) {
     //Try to load the audio file from disk into ram
     loadFromFile(sourceFile, formatManager);
     //Only gen a waveform if we actually loaded an audio file
