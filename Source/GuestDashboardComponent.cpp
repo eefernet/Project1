@@ -50,6 +50,19 @@ GuestDashboardComponent::GuestDashboardComponent(SoundLibrary& lib) : soundList(
     addAndMakeVisible(clustButton);
 
     addAndMakeVisible(soundList);
+
+    soundList.onBuySound = [this](Sound* s)
+        {
+            if (s != nullptr)
+            {
+                s->setPurchased(true);
+                DBG("Guest purchased sound: " + s->getName());
+
+                soundList.refresh();
+            }
+        };
+
+
 }
 
 GuestDashboardComponent::~GuestDashboardComponent()

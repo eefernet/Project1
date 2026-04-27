@@ -50,17 +50,24 @@ void SoundRowComponent::setRow(int newRow)
 {
     row = newRow;
     bool guest = owner.isGuestMode();
+    auto* sound = owner.getLibrary().getSound(row);
+    bool purchased = (sound != nullptr && sound->isPurchased());
 
-    // Update button text based on play state and mode
+    // Update play button text
     if (owner.isPlaying(row))
         playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x9c\x96 Stop"));
-    else if (guest)
+    else if (guest && !purchased)
         playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xb6 Sample"));
     else
         playButton.setButtonText(juce::CharPointer_UTF8("\xe2\x96\xb6 Play"));
 
-    buyButton.setVisible(guest);
+    // Guest mode: only show Buy if not purchased
+    buyButton.setVisible(guest && !purchased);
+
+    // Owner mode: show Edit button
     editButton.setVisible(!guest);
+
+    buyButton.setVisible(guest && !purchased);
 }
 
 void SoundRowComponent::resized()
@@ -236,19 +243,28 @@ void SoundListComponent::togglePlayback(int row)
 
     // In guest mode, create a trimmed buffer with only 20% of the samples
     auto& fullBuffer = sound->getAudioBuffer();
-    if (guestMode)
+
+    // Guest hears only a 20% sample unless the sound has been purchased.
+    // Owner always hears the full sound.
+    if (guestMode && !sound->isPurchased())
     {
-        int sampleCount = fullBuffer.getNumSamples() / 5;  // 20%
+        int sampleCount = juce::jmax(1, fullBuffer.getNumSamples() / 5); // 20%
         sampleBuffer.setSize(fullBuffer.getNumChannels(), sampleCount, false, true, false);
+
         for (int ch = 0; ch < fullBuffer.getNumChannels(); ++ch)
             sampleBuffer.copyFrom(ch, 0, fullBuffer, ch, 0, sampleCount);
-        // Make own copy so the source owns the exact trimmed data
+
         memorySource = std::make_unique<juce::MemoryAudioSource>(sampleBuffer, true, false);
         DBG("Guest sample: " << sampleCount << " of " << fullBuffer.getNumSamples() << " samples (20%)");
     }
     else
     {
         memorySource = std::make_unique<juce::MemoryAudioSource>(fullBuffer, false, false);
+
+        if (guestMode)
+            DBG("Playing purchased full sound: " << sound->getName());
+        else
+            DBG("Owner playing full sound: " << sound->getName());
     }
 
     sourcePlayer.setSource(memorySource.get());

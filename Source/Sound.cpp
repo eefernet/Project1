@@ -175,6 +175,16 @@ bool Sound::play()
     return false;
 }
 
+bool Sound::isPurchased() const
+{
+    return purchased;
+}
+
+void Sound::setPurchased(bool hasPurchased)
+{
+    purchased = hasPurchased;
+}
+
 /*
 * Apply a filter to the sound and return the modified version.
 * Right now this is a placeholder that just returns *this unchanged.
