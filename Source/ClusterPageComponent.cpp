@@ -72,6 +72,21 @@ ClusterPageComponent::ClusterPageComponent(ClusterEngine& en, SoundLibrary& libr
                 {
                     seekPreviewPlayback(normalizedPosition);
                 };
+            soundPopup->onCloseRequest = [this]()
+                {
+                    juce::MessageManager::callAsync([this]()
+                    {
+                            stopPreviewPlayback();
+
+                            if (soundPopup != nullptr)
+                            {
+                                removeChildComponent(soundPopup.get());
+                                soundPopup.reset();
+                            }
+
+                            currentPopupSound = nullptr;
+                    });
+                };
             addAndMakeVisible(soundPopup.get());
             const int popUpWidth = 260;
             const int popUpHeight = 110;
@@ -120,6 +135,15 @@ void ClusterPageComponent::seekPreviewPlayback(double normalizedPosition)
 }
 void ClusterPageComponent::runCurrentMode()
 {
+    stopPreviewPlayback();
+
+    if (soundPopup != nullptr)
+    {
+        removeChildComponent(soundPopup.get());
+        soundPopup.reset();
+    }
+
+    currentPopupSound = nullptr;
     if (modeBox.getSelectedId() == 1)
     {
         eng.clusterByLength();

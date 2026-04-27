@@ -32,6 +32,6 @@ private:
     juce::String getClusterLabel(int clusterId, int clusterCount) const;
     SoundLibrary& soundLibrary;
     int hoveredDotIndex = -1;
-    float dotRadius = 4.0f;
+    float getDotRadius() const;
 
 };
