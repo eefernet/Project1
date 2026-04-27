@@ -33,6 +33,7 @@ public:
 
     SoundLibrary& getSoundLibrary();
     juce::File getSoundsFolder() const { return loadedSoundsFolder; }
+    void addRecording(const juce::File& file);
 
 private:
     juce::Label titleLabel;

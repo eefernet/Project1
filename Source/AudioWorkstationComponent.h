@@ -536,6 +536,9 @@ public:
     // Callback to navigate back to the dashboard
     std::function<void()> onBack;
 
+    // Fired after the user saves a finished recording, with the saved file path
+    std::function<void(const juce::File&)> onRecordingSaved;
+
     AudioWorkstationComponent()
         : playbackState(Stopped),
         recorder(recordingThumbnail.getAudioThumbnail())
@@ -932,6 +935,7 @@ private:
                     // Update the sounds folder to the directory the user selected
                     soundsFolder = destFile.getParentDirectory();
                     lastRecording.copyFileTo(destFile);
+                    if (onRecordingSaved) onRecordingSaved(destFile);
                 }
 
                 recordButton.setButtonText("Record");

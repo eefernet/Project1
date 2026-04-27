@@ -221,3 +221,9 @@ SoundLibrary& OwnerDashboardComponent::getSoundLibrary()
 {
     return soundlibrary;
 }
+
+void OwnerDashboardComponent::addRecording(const juce::File& file)
+{
+    soundlibrary.loadFile(file);
+    if (soundList != nullptr) soundList->refresh();
+}
