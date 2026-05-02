@@ -78,6 +78,20 @@ MainComponent::MainComponent()
             showView(ViewState::RecorderView);
         };
 
+    audioWorkstation.onRecordingSaved = [this](const juce::File& f)
+        {
+            ownerDashboard.addRecording(f);
+        };
+
+    ownerDashboard.editSound = [this](Sound* s)
+        {
+            if (s == nullptr) return;
+            lastDashboardView = ViewState::OwnerDashboard;
+            audioWorkstation.setSoundsFolder(ownerDashboard.getSoundsFolder());
+            audioWorkstation.loadAudioFile(s->getSourceFile());
+            showView(ViewState::RecorderView);
+        };
+
     ownerDashboard.createGuestAccount = [this]()
         {
             handleCreateGuestAccountRequest();

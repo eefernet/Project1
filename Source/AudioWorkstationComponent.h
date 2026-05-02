@@ -536,6 +536,9 @@ public:
     // Callback to navigate back to the dashboard
     std::function<void()> onBack;
 
+    // Fired after the user saves a finished recording, with the saved file path
+    std::function<void(const juce::File&)> onRecordingSaved;
+
     AudioWorkstationComponent()
         : playbackState(Stopped),
         recorder(recordingThumbnail.getAudioThumbnail())
@@ -825,62 +828,67 @@ private:
         chooser = std::make_unique<juce::FileChooser>("Select a Wave file to play...", startDir, "*.wav");
 
         chooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles,
-            [this](const juce::FileChooser& fc)
-            {
-                auto file = fc.getResult();
-                // Saves file to a member variable so applied effects can be saved
-                currentFile = file;
-
-                // Update the sounds folder to the directory the user selected from
-                if (file != juce::File{})
-                    soundsFolder = file.getParentDirectory();
-
-                if (file != juce::File{})
-                {
-                    auto* reader = formatManager.createReaderFor(file);
-                    if (reader != nullptr)
-                    {
-                        // Reset transport state before tearing down the chain
-                        transportSource.stop();
-                        playbackState = Stopped;
-                        playButton.setButtonText("Play");
-                        playButton.setEnabled(false);
-                        stopButton.setEnabled(false);
-                        stopButton.setButtonText("Stop");
-                        saveFilteredButton.setEnabled(false);
-
-                        // Disconnect transport first — this releases the BufferingAudioSource
-                        // which holds a raw pointer into the old effects chain
-                        transportSource.setSource(nullptr);
-                        audioSourcePlayer.setSource(nullptr);
-
-                        // Now safe to destroy the old chain
-                        reverbSource.reset();
-                        pitchShiftSource.reset();
-                        readerSource.reset();
-
-                        // Build new chain
-                        auto fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-                        pitchShiftSource = std::make_unique<PitchShiftAudioSource>(*fileSource);
-                        reverbSource = std::make_unique<ReverbAudioSource>(*pitchShiftSource, reverb);
-
-                        transportSource.setSource(reverbSource.get(), 32768, &readAheadThread, reader->sampleRate);
-                        audioSourcePlayer.setSource(&transportSource);
-
-                        readerSource = std::move(fileSource);
-
-                        playButton.setEnabled(true);
-                        saveFilteredButton.setEnabled(true);
-                        playbackThumbnail.getAudioThumbnail().setSource(new juce::FileInputSource(file));
-                        openButton.setButtonText(file.getFileName());
-
-                        reverb.setSampleRate(reader->sampleRate);
-                        reverb.setParameters(reverbParams);
-                    }
-                }
-            });
+            [this](const juce::FileChooser& fc) { loadAudioFile(fc.getResult()); });
     }
 
+public:
+    // Loads an audio file into the workstation, rebuilding the effects chain.
+    // Public so other views (e.g. the sound list's Edit button) can hand a file in directly.
+    void loadAudioFile(const juce::File& file)
+    {
+        // Saves file to a member variable so applied effects can be saved
+        currentFile = file;
+
+        // Update the sounds folder to the directory the user selected from
+        if (file != juce::File{})
+            soundsFolder = file.getParentDirectory();
+
+        if (file != juce::File{})
+        {
+            auto* reader = formatManager.createReaderFor(file);
+            if (reader != nullptr)
+            {
+                // Reset transport state before tearing down the chain
+                transportSource.stop();
+                playbackState = Stopped;
+                playButton.setButtonText("Play");
+                playButton.setEnabled(false);
+                stopButton.setEnabled(false);
+                stopButton.setButtonText("Stop");
+                saveFilteredButton.setEnabled(false);
+
+                // Disconnect transport first — this releases the BufferingAudioSource
+                // which holds a raw pointer into the old effects chain
+                transportSource.setSource(nullptr);
+                audioSourcePlayer.setSource(nullptr);
+
+                // Now safe to destroy the old chain
+                reverbSource.reset();
+                pitchShiftSource.reset();
+                readerSource.reset();
+
+                // Build new chain
+                auto fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+                pitchShiftSource = std::make_unique<PitchShiftAudioSource>(*fileSource);
+                reverbSource = std::make_unique<ReverbAudioSource>(*pitchShiftSource, reverb);
+
+                transportSource.setSource(reverbSource.get(), 32768, &readAheadThread, reader->sampleRate);
+                audioSourcePlayer.setSource(&transportSource);
+
+                readerSource = std::move(fileSource);
+
+                playButton.setEnabled(true);
+                saveFilteredButton.setEnabled(true);
+                playbackThumbnail.getAudioThumbnail().setSource(new juce::FileInputSource(file));
+                openButton.setButtonText(file.getFileName());
+
+                reverb.setSampleRate(reader->sampleRate);
+                reverb.setParameters(reverbParams);
+            }
+        }
+    }
+
+private:
     void recordButtonClicked()
     {
         if (recorder.isRecording())
@@ -932,6 +940,7 @@ private:
                     // Update the sounds folder to the directory the user selected
                     soundsFolder = destFile.getParentDirectory();
                     lastRecording.copyFileTo(destFile);
+                    if (onRecordingSaved) onRecordingSaved(destFile);
                 }
 
                 recordButton.setButtonText("Record");

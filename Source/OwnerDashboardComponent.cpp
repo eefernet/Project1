@@ -94,6 +94,9 @@ OwnerDashboardComponent::OwnerDashboardComponent()
                     loadedSoundsFolder = dir;
                     soundlibrary.loadFromDirectory(dir);
                     soundList = std::make_unique<SoundListComponent>(soundlibrary);
+                    soundList->onEditSound = [this](Sound* s) {
+                        if (editSound) editSound(s);
+                    };
                     soundList->onSoundSelected = [this](Sound* s)
                         {
                             selectedSound = s;
@@ -220,4 +223,10 @@ void OwnerDashboardComponent::setUsername(const juce::String& name){
 SoundLibrary& OwnerDashboardComponent::getSoundLibrary()
 {
     return soundlibrary;
+}
+
+void OwnerDashboardComponent::addRecording(const juce::File& file)
+{
+    soundlibrary.loadFile(file);
+    if (soundList != nullptr) soundList->refresh();
 }
